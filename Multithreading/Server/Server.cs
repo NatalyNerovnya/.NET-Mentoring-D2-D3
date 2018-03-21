@@ -71,7 +71,6 @@ namespace Server
             {
                 client.Close();
             }
-            Environment.Exit(0); 
         }
     }
 }

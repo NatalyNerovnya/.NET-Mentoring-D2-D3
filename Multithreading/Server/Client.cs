@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 
 namespace Server
 {
@@ -35,7 +36,12 @@ namespace Server
                 {
                     try
                     {
-                        message = $"{userName}: {GetMessage()}";
+                        var mes = GetMessage();
+                        if (String.IsNullOrEmpty(mes))
+                        {
+                            throw new Exception("In my imaginary world empty messages are not allowed!");
+                        }
+                        message = $"{userName}: {mes}";
                         Console.WriteLine(message);
                         server.BroadcastMessage(message, Id);
                     }

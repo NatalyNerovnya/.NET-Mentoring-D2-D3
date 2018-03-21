@@ -43,9 +43,7 @@ namespace Client
             finally
             {
                 client.Dispose();
-                Disconnect(); //TODO: Fix it
-                
-
+                Disconnect();
             }
         }
 
@@ -83,7 +81,6 @@ namespace Client
         {
             stream?.Close();
             client?.Close();
-            Environment.Exit(0);
         }
     }
 }
