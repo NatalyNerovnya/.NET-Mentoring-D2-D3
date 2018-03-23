@@ -12,8 +12,7 @@ namespace Server
             try
             {
                 server = new Server();
-                listenThread = new Thread(server.Listen);
-                listenThread.Start();
+                server.Listen();
             }
             catch (Exception ex)
             {

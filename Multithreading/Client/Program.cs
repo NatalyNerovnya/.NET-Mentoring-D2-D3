@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Configuration;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using ChatHelper;
 
 namespace Client
@@ -13,6 +15,7 @@ namespace Client
         private const int port = 1111;
         private static TcpClient client;
         private static NetworkStream stream;
+        private static bool isTplVersion = Convert.ToBoolean(ConfigurationManager.AppSettings["TPLVersion"]);
 
         static void Main(string[] args)
         {
@@ -25,8 +28,16 @@ namespace Client
 
                 SendMessage(userName);
 
-                var receiveThread = new Thread(ReceiveMessage);
-                receiveThread.Start();
+                if (!isTplVersion)
+                {
+                    var receiveThread = new Thread(ReceiveMessage);
+                    receiveThread.Start();
+                }
+                else
+                {
+                    Task.Factory.StartNew(ReceiveMessage);
+                }
+
                 var messageNumber = MessageRepository.GetRandomMessageNumber();
                 Console.WriteLine($"Random User Name = {userName}, ({messageNumber} messages)");
 
