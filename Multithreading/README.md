@@ -1,3 +1,9 @@
+# To switch between 'Thread' and 'TPL' implementstion:
+Please, change 'TPLVersion' value in both client and server app.config
+
+
+
+
 # Задание к модулю Multithreading
 
 # Общее
