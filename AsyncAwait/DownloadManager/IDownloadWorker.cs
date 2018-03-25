@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace DownloadManager
 {
     public interface IDownloadWorker
     {
-        Task DownloadPageAsync(string uriPath);
+        Task DownloadPageAsync(string uriPath, CancellationToken ct);
     }
 }
