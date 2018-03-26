@@ -24,6 +24,7 @@ namespace DownloadManager
             {
                 response = await client.GetAsync(uri, ct);
             }
+            ct.ThrowIfCancellationRequested();
 
             return await response.Content.ReadAsStringAsync(); 
         }
