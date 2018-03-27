@@ -35,11 +35,16 @@ namespace DownloadManager
 
         private void download1_Click(object sender, EventArgs e)
         {
+            var task = this.HabdleDownloadedClickAsync();
+        }
+
+        private async Task HabdleDownloadedClickAsync()
+        {
             var tasksToDownload = this._uriStringsList.Select(str =>
             {
                 var ct = new CancellationTokenSource();
                 var cancelString = $"Cancel {new Uri(str).Host}";
-                var button = new Button() { Text = cancelString, Width = 300, Name = str};
+                var button = new Button() { Text = cancelString, Width = 300, Name = str };
                 button.Click += (o, args) =>
                 {
                     ct?.Cancel();
@@ -54,14 +59,14 @@ namespace DownloadManager
 
             while (downloadTasks.Any())
             {
-                var finishedTask = Task.WhenAny(downloadTasks);
-                downloadTasks.Remove(finishedTask.Result);
-                var uriString = finishedTask.Result.Result;
+                var finishedTask = await Task.WhenAny(downloadTasks);
+                downloadTasks.Remove(finishedTask);
+                var uriString = await finishedTask;
                 var button = this.flowLayoutPanel1.Controls.Find(uriString, false)[0] as Button;
                 RemovePanelsElements(button, uriString);
             }
         }
-        
+
         private async Task<string> HabdleDownloadedClickAsync(string uriString, CancellationTokenSource cts)
         {
             try
