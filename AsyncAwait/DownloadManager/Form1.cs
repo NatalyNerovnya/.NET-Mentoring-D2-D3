@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -34,30 +35,34 @@ namespace DownloadManager
 
         private void download1_Click(object sender, EventArgs e)
         {
-            foreach (var uriString in _uriStringsList)
+            var tasksToDownload = this._uriStringsList.Select(str =>
             {
-                var cancelationTokenSource = new CancellationTokenSource();
-                var cancelString = $"Cancel {new Uri(uriString).Host}";
-
-                var button = new Button() { Text = cancelString, Width = 300 };
-                button.Click += (o, args) => {
-                    cancelationTokenSource?.Cancel();
-                    RemovePanelsElements(button, uriString);
-                };
-
-                this.flowLayoutPanel1.Controls.Add(button);
-                var task = this.HabdleDownloadedClickAsync(uriString, cancelationTokenSource);
-
-                this.flowLayoutPanel2.Controls.Remove(flowLayoutPanel2.Controls.Find(uriString, false)[0]);
-
-                task.ContinueWith((t) =>
+                var ct = new CancellationTokenSource();
+                var cancelString = $"Cancel {new Uri(str).Host}";
+                var button = new Button() { Text = cancelString, Width = 300, Name = str};
+                button.Click += (o, args) =>
                 {
-                    RemovePanelsElements(button, uriString);
-                }, TaskScheduler.FromCurrentSynchronizationContext());
+                    ct?.Cancel();
+                    RemovePanelsElements(button, str);
+                };
+                this.flowLayoutPanel1.Controls.Add(button);
+                this.flowLayoutPanel2.Controls.Remove(flowLayoutPanel2.Controls.Find(str, false)[0]);
+                return HabdleDownloadedClickAsync(str, ct);
+            });
+
+            var downloadTasks = tasksToDownload.ToList();
+
+            while (downloadTasks.Any())
+            {
+                var finishedTask = Task.WhenAny(downloadTasks);
+                downloadTasks.Remove(finishedTask.Result);
+                var uriString = finishedTask.Result.Result;
+                var button = this.flowLayoutPanel1.Controls.Find(uriString, false)[0] as Button;
+                RemovePanelsElements(button, uriString);
             }
         }
         
-        private async Task HabdleDownloadedClickAsync(string uriString, CancellationTokenSource cts)
+        private async Task<string> HabdleDownloadedClickAsync(string uriString, CancellationTokenSource cts)
         {
             try
             {
@@ -67,15 +72,16 @@ namespace DownloadManager
             {
                 this.label2.Text += $"\nCanceled: {uriString}";
                 cts.Dispose();
-                return;
+                return uriString;
             }
             catch (Exception)
             {
                 this.label2.Text += $"\nFailed to download: {uriString}";
-                return;
+                return uriString;
             }
 
             this.label2.Text += $"\nDownloaded: {uriString}";
+            return uriString;
         }
 
         private void RemovePanelsElements(Button button, string uriString)
