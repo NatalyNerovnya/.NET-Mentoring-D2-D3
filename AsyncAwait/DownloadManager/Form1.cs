@@ -52,7 +52,7 @@ namespace DownloadManager
                 };
                 this.flowLayoutPanel1.Controls.Add(button);
                 this.flowLayoutPanel2.Controls.Remove(flowLayoutPanel2.Controls.Find(str, false)[0]);
-                return HabdleDownloadedClickAsync(str, ct);
+                return DownloadPageAsync(str, ct);
             });
 
             var downloadTasks = tasksToDownload.ToList();
@@ -67,7 +67,7 @@ namespace DownloadManager
             }
         }
 
-        private async Task<string> HabdleDownloadedClickAsync(string uriString, CancellationTokenSource cts)
+        private async Task<string> DownloadPageAsync(string uriString, CancellationTokenSource cts)
         {
             try
             {

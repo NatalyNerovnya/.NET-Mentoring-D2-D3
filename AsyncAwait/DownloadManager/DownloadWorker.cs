@@ -32,19 +32,31 @@ namespace DownloadManager
         private async Task<string> GenerateFileAsync(Uri uri, string result)
         {
             var name = uri.Host;
-            var fileName = name + ".html";
+            var fileName = $"{name}_{Guid.NewGuid()}.html";
             fileName = fileName.Replace(Path.AltDirectorySeparatorChar.ToString(), string.Empty)
                 .Replace(Path.DirectorySeparatorChar.ToString(), string.Empty);
-            var folderPath = ConfigurationManager.AppSettings["FilePath"];
-            var filePath = $@"{folderPath}{Path.DirectorySeparatorChar}{fileName}";
-            
-            File.Create(filePath).Close();
+            var filePath = CreateFile(fileName);
 
             using (var writer = new StreamWriter(filePath))
             {
                 await writer.WriteAsync(result);
             }
 
+            return filePath;
+        }
+
+        private string CreateFile(string fileName)
+        {
+            var folderPath = ConfigurationManager.AppSettings["FilePath"];
+
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            var filePath = $@"{folderPath}{Path.DirectorySeparatorChar}{fileName}";
+
+            File.Create(filePath).Close();
             return filePath;
         }
     }
