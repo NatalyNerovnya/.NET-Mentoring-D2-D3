@@ -11,7 +11,7 @@ namespace Server
 
         private string userName;
         private readonly TcpClient client;
-        private readonly Server server; 
+        private readonly Server server;
 
         public Client(TcpClient tcpClient, Server serverObject)
         {
@@ -33,24 +33,14 @@ namespace Server
                 Console.WriteLine(message);
                 while (true)
                 {
-                    try
+                    var mes = GetMessage();
+                    if (mes == "END")
                     {
-                        var mes = GetMessage();
-                        if (String.IsNullOrEmpty(mes))
-                        {
-                            throw new Exception("In my imaginary world empty messages are not allowed!");
-                        }
-                        message = $"{userName}: {mes}";
-                        Console.WriteLine(message);
-                        server.BroadcastMessage(message, Id);
-                    }
-                    catch
-                    {
-                        message = $"{userName}: leave the chat";
-                        Console.WriteLine(message);
-                        server.BroadcastMessage(message, Id);
+                        RecieveAndUpdate($"{userName}: leave the chat");
                         break;
                     }
+
+                    RecieveAndUpdate($"{userName}:{mes}");
                 }
             }
             catch (Exception e)
@@ -70,9 +60,15 @@ namespace Server
             client?.Close();
         }
 
+        private void RecieveAndUpdate(string message)
+        {
+            Console.WriteLine(message);
+            server.BroadcastMessage(message, Id);
+        }
+
         private string GetMessage()
         {
-            var data= new byte[64];
+            var data = new byte[64];
             var builder = new StringBuilder();
             do
             {

@@ -16,11 +16,16 @@ namespace Client
         private static TcpClient client;
         private static NetworkStream stream;
         private static bool isTplVersion = Convert.ToBoolean(ConfigurationManager.AppSettings["TPLVersion"]);
+        private static Thread _recieverThread;
+        private static CancellationTokenSource cts;
+
 
         static void Main(string[] args)
         {
             userName = NameRepository.GetRandomName();
             client = new TcpClient();
+            cts = new CancellationTokenSource();
+            Console.CancelKeyPress += cancelKeyHandler;
             try
             {
                 client.Connect(host, port);
@@ -30,12 +35,12 @@ namespace Client
 
                 if (!isTplVersion)
                 {
-                    var receiveThread = new Thread(ReceiveMessage);
-                    receiveThread.Start();
+                    _recieverThread = new Thread(ReceiveMessage);
+                    _recieverThread.Start();
                 }
                 else
                 {
-                    Task.Factory.StartNew(ReceiveMessage);
+                    Task.Factory.StartNew(ReceiveMessage, cts.Token);
                 }
 
                 var messageNumber = MessageRepository.GetRandomMessageNumber();
@@ -50,10 +55,6 @@ namespace Client
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-            }
-            finally
-            {
-                client.Dispose();
                 Disconnect();
             }
         }
@@ -88,8 +89,18 @@ namespace Client
             }
         }
 
+        private static void cancelKeyHandler(object sender, ConsoleCancelEventArgs args)
+        {
+            SendMessage("END");
+
+            Disconnect();
+        }
+
+
         private static void Disconnect()
         {
+            _recieverThread.Abort();
+            cts.Cancel();
             stream?.Close();
             client?.Close();
         }
