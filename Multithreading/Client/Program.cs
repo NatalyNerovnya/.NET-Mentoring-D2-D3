@@ -10,47 +10,50 @@ namespace Client
 {
     public class Program
     {
-        private static string userName;
-        private const string host = "127.0.0.1";
-        private const int port = 1111;
-        private static TcpClient client;
-        private static NetworkStream stream;
-        private static bool isTplVersion = Convert.ToBoolean(ConfigurationManager.AppSettings["TPLVersion"]);
-        private static Thread _recieverThread;
-        private static CancellationTokenSource cts;
-
+        private static string _userName;
+        private static readonly string Host = ConfigurationManager.AppSettings["ServerHost"];
+        private static readonly int Port = Convert.ToInt32(ConfigurationManager.AppSettings["Port"]);
+        private static TcpClient _client;
+        private static NetworkStream _stream;
+        private static readonly bool IsTplVersion = Convert.ToBoolean(ConfigurationManager.AppSettings["TPLVersion"]);
+        private static Task _recievertask;
 
         static void Main(string[] args)
         {
-            userName = NameRepository.GetRandomName();
-            client = new TcpClient();
-            cts = new CancellationTokenSource();
-            Console.CancelKeyPress += cancelKeyHandler;
+            _userName = NameRepository.GetRandomName();
+            _client = new TcpClient();
+            Console.CancelKeyPress += CancelKeyHandler;
             try
             {
-                client.Connect(host, port);
-                stream = client.GetStream();
+                _client.Connect(Host, Port);
+                _stream = _client.GetStream();
 
-                SendMessage(userName);
+                SendMessage(_userName);
 
-                if (!isTplVersion)
+                if (!IsTplVersion)
                 {
-                    _recieverThread = new Thread(ReceiveMessage);
-                    _recieverThread.Start();
+                    var recieverThread = new Thread(ReceiveMessage);
+                    recieverThread.Start();
                 }
                 else
                 {
-                    Task.Factory.StartNew(ReceiveMessage, cts.Token);
+                    _recievertask = Task.Factory.StartNew(ReceiveMessage);
                 }
 
                 var messageNumber = MessageRepository.GetRandomMessageNumber();
-                Console.WriteLine($"Random User Name = {userName}, ({messageNumber} messages)");
+                Console.WriteLine($"Random User Name = {_userName}, ({messageNumber} messages)");
 
                 for (int i = 0; i < messageNumber; i++)
                 {
                     Thread.Sleep(MilisecondsRepository.GetRandomMilisecondsNumber());
                     SendMessage(MessageRepository.GetRandomMessage());
                 }
+
+                if (IsTplVersion)
+                {
+                    _recievertask.Wait();
+                }
+
             }
             catch (Exception ex)
             {
@@ -61,10 +64,10 @@ namespace Client
 
         private static void SendMessage(string message)
         {
-                var data = Encoding.Unicode.GetBytes(message);
-                stream.Write(data, 0, data.Length);
+            var data = Encoding.Unicode.GetBytes(message);
+            _stream.Write(data, 0, data.Length);
         }
-        
+
         private static void ReceiveMessage()
         {
             while (true)
@@ -75,9 +78,9 @@ namespace Client
                     var builder = new StringBuilder();
                     do
                     {
-                        var bytes = stream.Read(data, 0, data.Length);
+                        var bytes = _stream.Read(data, 0, data.Length);
                         builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
-                    } while (stream.DataAvailable);
+                    } while (_stream.DataAvailable);
 
                     var message = builder.ToString();
                     Console.WriteLine(message);
@@ -89,7 +92,7 @@ namespace Client
             }
         }
 
-        private static void cancelKeyHandler(object sender, ConsoleCancelEventArgs args)
+        private static void CancelKeyHandler(object sender, ConsoleCancelEventArgs args)
         {
             SendMessage("END");
 
@@ -99,10 +102,9 @@ namespace Client
 
         private static void Disconnect()
         {
-            _recieverThread.Abort();
-            cts.Cancel();
-            stream?.Close();
-            client?.Close();
+            _stream?.Close();
+            _client?.Close();
+            Environment.Exit(0);
         }
     }
 }

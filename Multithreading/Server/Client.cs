@@ -6,18 +6,18 @@ namespace Server
 {
     public class Client
     {
-        public string Id { get; private set; }
+        public string Id { get; }
         public NetworkStream Stream { get; private set; }
 
-        private string userName;
-        private readonly TcpClient client;
-        private readonly Server server;
+        private string _userName;
+        private readonly TcpClient _client;
+        private readonly Server _server;
 
         public Client(TcpClient tcpClient, Server serverObject)
         {
             Id = Guid.NewGuid().ToString();
-            client = tcpClient;
-            server = serverObject;
+            _client = tcpClient;
+            _server = serverObject;
             serverObject.AddConnection(this);
         }
 
@@ -25,22 +25,22 @@ namespace Server
         {
             try
             {
-                Stream = client.GetStream();
-                this.userName = GetMessage();
+                Stream = _client.GetStream();
+                _userName = GetMessage();
 
-                var message = $"{this.userName} enter the chat";
-                server.BroadcastMessage(message, Id);
+                var message = $"{_userName} enter the chat";
+                _server.BroadcastMessage(message, Id);
                 Console.WriteLine(message);
                 while (true)
                 {
                     var mes = GetMessage();
                     if (mes == "END")
                     {
-                        RecieveAndUpdate($"{userName}: leave the chat");
+                        RecieveAndUpdate($"{_userName}: leave the chat");
                         break;
                     }
 
-                    RecieveAndUpdate($"{userName}:{mes}");
+                    RecieveAndUpdate($"{_userName}:{mes}");
                 }
             }
             catch (Exception e)
@@ -49,7 +49,7 @@ namespace Server
             }
             finally
             {
-                server.RemoveConnection(Id);
+                _server.RemoveConnection(Id);
                 Close();
             }
         }
@@ -57,13 +57,13 @@ namespace Server
         public void Close()
         {
             Stream?.Close();
-            client?.Close();
+            _client?.Close();
         }
 
         private void RecieveAndUpdate(string message)
         {
             Console.WriteLine(message);
-            server.BroadcastMessage(message, Id);
+            _server.BroadcastMessage(message, Id);
         }
 
         private string GetMessage()

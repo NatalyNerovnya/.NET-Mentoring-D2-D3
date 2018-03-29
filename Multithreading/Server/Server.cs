@@ -12,41 +12,42 @@ namespace Server
 {
     public class Server
     {
-        private static TcpListener tcpListener;
-        private List<Client> clients;
-        private bool isTplVersion;
+        private static TcpListener _tcpListener;
+        private readonly List<Client> _clients;
+        private readonly bool _isTplVersion;
+        private static readonly int Port = Convert.ToInt32(ConfigurationManager.AppSettings["Port"]);
 
         public Server()
         {
-            clients = new List<Client>();
-            isTplVersion = Convert.ToBoolean(ConfigurationManager.AppSettings["TPLVersion"]);
+            _clients = new List<Client>();
+            _isTplVersion = Convert.ToBoolean(ConfigurationManager.AppSettings["TPLVersion"]);
         }
 
         public void AddConnection(Client client)
         {
-            clients.Add(client);
+            _clients.Add(client);
         }
 
         public void RemoveConnection(string id)
         {
-            var client = clients.FirstOrDefault(c => c.Id == id);
-            clients?.Remove(client);
+            var client = _clients.FirstOrDefault(c => c.Id == id);
+            _clients?.Remove(client);
         }
        
         public void Listen()
         {
             try
             {
-                tcpListener = new TcpListener(IPAddress.Any, 1111);
-                tcpListener.Start();
+                _tcpListener = new TcpListener(IPAddress.Any, Port);
+                _tcpListener.Start();
                 Console.WriteLine("Server is started. Waiting for connections...");
 
                 while (true)
                 {
-                    var tcpClient = tcpListener.AcceptTcpClient();
+                    var tcpClient = _tcpListener.AcceptTcpClient();
 
                     var client = new Client(tcpClient, this);
-                    if (!isTplVersion)
+                    if (!_isTplVersion)
                     {
                         var clientThread = new Thread(client.Process);
                         Console.WriteLine(
@@ -69,7 +70,7 @@ namespace Server
         public void BroadcastMessage(string message, string id)
         {
             var data = Encoding.Unicode.GetBytes(message);
-            foreach (var client in clients.Where(client => client.Id != id))
+            foreach (var client in _clients.Where(client => client.Id != id))
             {
                 client.Stream.Write(data, 0, data.Length); 
             }
@@ -77,12 +78,14 @@ namespace Server
 
         public void Disconnect()
         {
-            tcpListener.Stop();
+            _tcpListener.Stop();
 
-            foreach (var client in clients)
+            foreach (var client in _clients)
             {
                 client.Close();
             }
+
+            Environment.Exit(0);
         }
     }
 }

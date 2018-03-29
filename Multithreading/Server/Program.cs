@@ -1,22 +1,21 @@
 ﻿using System;
-using System.Threading;
 
 namespace Server
 {
     class Program
     {
-        private static Server server;
-        private static Thread listenThread;
+        private static Server _server;
+
         static void Main(string[] args)
         {
             try
             {
-                server = new Server();
-                server.Listen();
+                _server = new Server();
+                _server.Listen();
             }
             catch (Exception ex)
             {
-                server.Disconnect();
+                _server.Disconnect();
                 Console.WriteLine(ex.Message);
             }
         }
