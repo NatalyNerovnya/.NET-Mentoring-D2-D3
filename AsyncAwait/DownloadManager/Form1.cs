@@ -19,39 +19,39 @@ namespace DownloadManager
             InitializeComponent();
             Downloader = worker;
 
-            this.label1.Text = $"Download files you can fined at {ConfigurationManager.AppSettings["FilePath"]}";
-            this.label2.Text = string.Empty;
+            label1.Text = $@"Download files you can fined at {ConfigurationManager.AppSettings["FilePath"]}";
+            label2.Text = string.Empty;
 
             _uriStringsList = new List<string>();
         }
 
         private void addButton_Click(object sender, EventArgs e)
         {
-            var uriString = this.input1.Text;
-            this._uriStringsList.Add(uriString);
-            this.flowLayoutPanel2.Controls.Add(new Label() {Text = uriString, Name = uriString, Width = 300 });
-            this.input1.Text = string.Empty;
+            var uriString = input1.Text;
+            _uriStringsList.Add(uriString);
+            flowLayoutPanel2.Controls.Add(new Label {Text = uriString, Name = uriString, Width = 300 });
+            input1.Text = string.Empty;
         }
 
         private void download1_Click(object sender, EventArgs e)
         {
-            var task = this.HabdleDownloadedClickAsync();
+            var unused = HabdleDownloadedClickAsync();
         }
 
         private async Task HabdleDownloadedClickAsync()
         {
-            var tasksToDownload = this._uriStringsList.Select(str =>
+            var tasksToDownload = _uriStringsList.Select(str =>
             {
                 var ct = new CancellationTokenSource();
                 var cancelString = $"Cancel {new Uri(str).Host}";
-                var button = new Button() { Text = cancelString, Width = 300, Name = str };
+                var button = new Button { Text = cancelString, Width = 300, Name = str };
                 button.Click += (o, args) =>
                 {
-                    ct?.Cancel();
+                    ct.Cancel();
                     RemovePanelsElements(button, str);
                 };
-                this.flowLayoutPanel1.Controls.Add(button);
-                this.flowLayoutPanel2.Controls.Remove(flowLayoutPanel2.Controls.Find(str, false)[0]);
+                flowLayoutPanel1.Controls.Add(button);
+                flowLayoutPanel2.Controls.Remove(flowLayoutPanel2.Controls.Find(str, false)[0]);
                 return DownloadPageAsync(str, ct);
             });
 
@@ -62,7 +62,7 @@ namespace DownloadManager
                 var finishedTask = await Task.WhenAny(downloadTasks);
                 downloadTasks.Remove(finishedTask);
                 var uriString = await finishedTask;
-                var button = this.flowLayoutPanel1.Controls.Find(uriString, false)[0] as Button;
+                var button = flowLayoutPanel1.Controls.Find(uriString, false)[0] as Button;
                 RemovePanelsElements(button, uriString);
             }
         }
@@ -71,28 +71,28 @@ namespace DownloadManager
         {
             try
             {
-                await this.Downloader.DownloadPageAsync(uriString, cts.Token);
+                await Downloader.DownloadPageAsync(uriString, cts.Token);
             }
             catch (OperationCanceledException)
             {
-                this.label2.Text += $"\nCanceled: {uriString}";
+                label2.Text += $"\nCanceled: {uriString}";
                 cts.Dispose();
                 return uriString;
             }
             catch (Exception)
             {
-                this.label2.Text += $"\nFailed to download: {uriString}";
+                label2.Text += $"\nFailed to download: {uriString}";
                 return uriString;
             }
 
-            this.label2.Text += $"\nDownloaded: {uriString}";
+            label2.Text += $"\nDownloaded: {uriString}";
             return uriString;
         }
 
         private void RemovePanelsElements(Button button, string uriString)
         {
-            this.flowLayoutPanel1.Controls.Remove(button);
-            this._uriStringsList.Remove(uriString);
+            flowLayoutPanel1.Controls.Remove(button);
+            _uriStringsList.Remove(uriString);
         }
     }
 }
