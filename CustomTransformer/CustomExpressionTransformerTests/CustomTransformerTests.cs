@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CustomExpressionTransformerTests
 {
     [TestClass]
-    public class UnitTest1
+    public class CustomTransformerTests
     {
         [TestMethod]
         public void TestMethod1()

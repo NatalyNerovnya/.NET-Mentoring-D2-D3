@@ -13,14 +13,18 @@ namespace CustomTransformer
                 return expression;
             }
             var parameter = expression.Left;
-            if (expression.NodeType == ExpressionType.Add)
+
+            switch (expression.NodeType)
             {
-                return Expression.Increment(parameter);
+                case ExpressionType.Add:
+                    return Expression.Increment(parameter);
+                case ExpressionType.Subtract:
+                    return Expression.Decrement(parameter);
             }
-            else //if (expression.NodeType == ExpressionType.Subtract)
-            {
-                return Expression.Decrement(parameter);
-            }
+
+            return expression;
         }
+
+
     }
 }
