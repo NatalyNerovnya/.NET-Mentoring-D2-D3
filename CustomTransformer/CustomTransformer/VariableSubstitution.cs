@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace CustomTransformer
@@ -19,7 +20,7 @@ namespace CustomTransformer
                 VisitParameter((ParameterExpression)expression.Body);
             }
             
-            return Expression.Lambda(Visit(expression.Body), expression.Parameters);
+            return Expression.Lambda(Visit(expression.Body), expression.Parameters.Where(x => !ValuesDictionary.ContainsKey(x.Name)));
         }
 
         protected override Expression VisitParameter(ParameterExpression node)
