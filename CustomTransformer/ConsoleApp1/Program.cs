@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Runtime.InteropServices;
 using CustomTransformer;
 
 namespace ConsoleApp1
@@ -39,10 +40,11 @@ namespace ConsoleApp1
             
 
             var substituter = new VariableSubstitution<int>(valueDictionary);
-            var subsititedExpression = substituter.Visit(someExpression);
+            var subsititedExpression = substituter.VisitAndConvert(someExpression, "");
 
             Console.WriteLine(someExpression);
             Console.WriteLine(subsititedExpression);
+            Console.WriteLine(subsititedExpression?.Compile().Invoke(0,0,0));
 
             Console.ReadKey();
         }

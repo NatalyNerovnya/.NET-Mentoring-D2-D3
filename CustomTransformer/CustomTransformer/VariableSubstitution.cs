@@ -20,7 +20,7 @@ namespace CustomTransformer
                 VisitParameter((ParameterExpression)expression.Body);
             }
             
-            return Expression.Lambda(Visit(expression.Body), expression.Parameters.Where(x => !ValuesDictionary.ContainsKey(x.Name)));
+            return Expression.Lambda(Visit(expression.Body), expression.Parameters);
         }
 
         protected override Expression VisitParameter(ParameterExpression node)
