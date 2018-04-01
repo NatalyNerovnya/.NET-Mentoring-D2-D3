@@ -8,8 +8,9 @@ namespace CustomTransformer
         protected override Expression VisitBinary(BinaryExpression expression)
         {
             var rightParameter = expression.Right;
-            if (rightParameter.NodeType != ExpressionType.Constant)
+            if (rightParameter.NodeType != ExpressionType.Constant || Convert.ToInt32((rightParameter as ConstantExpression)?.Value) != 1)
             {
+                Console.WriteLine("Not suitable pattern. Pattern should be <parameter> + 1 / <parameter> + 1");
                 return expression;
             }
             var parameter = expression.Left;
@@ -24,7 +25,6 @@ namespace CustomTransformer
 
             return expression;
         }
-
 
     }
 }

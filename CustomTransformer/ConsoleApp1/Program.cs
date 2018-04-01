@@ -13,16 +13,21 @@ namespace ConsoleApp1
             Console.WriteLine(incrementExpression);
             
             CustomExpressionTransformer transformer = new CustomExpressionTransformer();
-            var transformatedExpression = transformer.Visit(incrementExpression.Body);
+            var transformatedExpression = transformer.VisitAndConvert(incrementExpression, "");
             Console.WriteLine(transformatedExpression);
+
+            Console.WriteLine($"Increment with value = 2 : {transformatedExpression?.Compile().Invoke(2)}");
+
 
 
             Console.WriteLine("Decrementing");
             Expression<Func<int, int>> decrementExpression = (u) => u - 1;
             Console.WriteLine(decrementExpression);
 
-            transformatedExpression = transformer.Visit(decrementExpression.Body);
+            transformatedExpression = transformer.VisitAndConvert(decrementExpression, "");
             Console.WriteLine(transformatedExpression);
+
+            Console.WriteLine($"Decrement with value = 2 : {transformatedExpression?.Compile().Invoke(2)}");
 
             Console.ReadKey();
         }
