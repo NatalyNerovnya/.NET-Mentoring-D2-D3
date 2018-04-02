@@ -45,5 +45,60 @@ namespace Sample03
 				Console.WriteLine("{0} {1}", emp.nativeName, emp.shortStartWorkDate);
 			}
         }
-	}
+
+	    [TestMethod]
+	    public void WithProviderConstantAndFilteredName()
+	    {
+	        var employees = new E3SEntitySet<EmployeeEntity>(ConfigurationManager.AppSettings["user"], ConfigurationManager.AppSettings["password"]);
+
+	        foreach (var emp in employees.Where(e => "EPRUIZHW0249" == e.workStation))
+	        {
+	            Console.WriteLine("{0} {1}", emp.nativeName, emp.shortStartWorkDate);
+	        }
+	    }
+
+	    [TestMethod]
+	    public void StartsWithTest()
+	    {
+	        var employees = new E3SEntitySet<EmployeeEntity>(ConfigurationManager.AppSettings["user"], ConfigurationManager.AppSettings["password"]);
+
+	        foreach (var emp in employees.Where(e => e.workStation.StartsWith("EPRUIZHW02")))
+	        {
+	            Console.WriteLine($"{emp.nativeName} {emp.workStation}");
+	        }
+        }
+
+	    [TestMethod]
+	    public void EndWithTest()
+	    {
+	        var employees = new E3SEntitySet<EmployeeEntity>(ConfigurationManager.AppSettings["user"], ConfigurationManager.AppSettings["password"]);
+
+	        foreach (var emp in employees.Where(e => e.workStation.EndsWith("W0249")))
+	        {
+	            Console.WriteLine($"{emp.nativeName} {emp.workStation}");
+	        }
+	    }
+
+	    [TestMethod]
+	    public void ContainsTest()
+	    {
+	        var employees = new E3SEntitySet<EmployeeEntity>(ConfigurationManager.AppSettings["user"], ConfigurationManager.AppSettings["password"]);
+
+	        foreach (var emp in employees.Where(e => e.workStation.Contains("IZHW02")))
+	        {
+	            Console.WriteLine($"{emp.nativeName} {emp.workStation}");
+	        }
+	    }
+
+	    [TestMethod]
+	    public void AndTest()
+	    {
+	        var employees = new E3SEntitySet<EmployeeEntity>(ConfigurationManager.AppSettings["user"], ConfigurationManager.AppSettings["password"]);
+
+            foreach (var emp in employees.Where(e => e.workStation.Contains("IZHW02") && e.nativeName == "Михаил Романов"))
+	        {
+	            Console.WriteLine($"{emp.nativeName} {emp.workStation}");
+            }
+	    }
+    }
 }
