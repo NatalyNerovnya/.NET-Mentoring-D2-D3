@@ -5,7 +5,17 @@ VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomTransformer", "CustomTransformer\CustomTransformer.csproj", "{B68725E9-3084-4669-8CCA-B56F2C3F7D4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{DA89093F-D793-4611-ABB3-C597D5F702C2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomTransformerConsoleTest", "CustomTransformerConsoleTest\CustomTransformerConsoleTest.csproj", "{DA89093F-D793-4611-ABB3-C597D5F702C2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExpressionTransformer", "ExpressionTransformer", "{1234862E-5BD6-436E-9043-CD8E0056D6E2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CustomMapper", "CustomMapper", "{3D68A901-0503-4929-9240-4EC695258C82}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomMapper", "CustomMapper\CustomMapper.csproj", "{47820194-23D6-4FC4-BBAB-766B170101F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClasses", "TestClasses\TestClasses.csproj", "{23B2E317-1BE5-4288-8187-E73B9EC929B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomMapperTests", "CustomMapperTests\CustomMapperTests.csproj", "{21A758C7-73ED-42B7-B79C-A0BC1ACB900C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,9 +31,28 @@ Global
 		{DA89093F-D793-4611-ABB3-C597D5F702C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA89093F-D793-4611-ABB3-C597D5F702C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA89093F-D793-4611-ABB3-C597D5F702C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47820194-23D6-4FC4-BBAB-766B170101F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47820194-23D6-4FC4-BBAB-766B170101F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47820194-23D6-4FC4-BBAB-766B170101F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47820194-23D6-4FC4-BBAB-766B170101F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23B2E317-1BE5-4288-8187-E73B9EC929B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23B2E317-1BE5-4288-8187-E73B9EC929B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23B2E317-1BE5-4288-8187-E73B9EC929B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23B2E317-1BE5-4288-8187-E73B9EC929B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21A758C7-73ED-42B7-B79C-A0BC1ACB900C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21A758C7-73ED-42B7-B79C-A0BC1ACB900C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21A758C7-73ED-42B7-B79C-A0BC1ACB900C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21A758C7-73ED-42B7-B79C-A0BC1ACB900C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B68725E9-3084-4669-8CCA-B56F2C3F7D4B} = {1234862E-5BD6-436E-9043-CD8E0056D6E2}
+		{DA89093F-D793-4611-ABB3-C597D5F702C2} = {1234862E-5BD6-436E-9043-CD8E0056D6E2}
+		{47820194-23D6-4FC4-BBAB-766B170101F3} = {3D68A901-0503-4929-9240-4EC695258C82}
+		{23B2E317-1BE5-4288-8187-E73B9EC929B6} = {3D68A901-0503-4929-9240-4EC695258C82}
+		{21A758C7-73ED-42B7-B79C-A0BC1ACB900C} = {3D68A901-0503-4929-9240-4EC695258C82}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {49223B87-DD35-4DC4-BFF2-B15AD1DD913F}
