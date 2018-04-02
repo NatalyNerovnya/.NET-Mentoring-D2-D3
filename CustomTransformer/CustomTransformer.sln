@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomTransformer", "CustomTransformer\CustomTransformer.csproj", "{B68725E9-3084-4669-8CCA-B56F2C3F7D4B}"
 EndProject
@@ -16,6 +16,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClasses", "TestClasses\TestClasses.csproj", "{23B2E317-1BE5-4288-8187-E73B9EC929B6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomMapperTests", "CustomMapperTests\CustomMapperTests.csproj", "{21A758C7-73ED-42B7-B79C-A0BC1ACB900C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "E3SClient", "E3SClient", "{408E8427-4F28-44ED-A568-F8C1D21AFBF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample03", "Sample03\Sample03.csproj", "{4B096486-7457-4911-8280-7BA7A2BB45A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,6 +47,10 @@ Global
 		{21A758C7-73ED-42B7-B79C-A0BC1ACB900C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{21A758C7-73ED-42B7-B79C-A0BC1ACB900C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{21A758C7-73ED-42B7-B79C-A0BC1ACB900C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B096486-7457-4911-8280-7BA7A2BB45A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B096486-7457-4911-8280-7BA7A2BB45A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B096486-7457-4911-8280-7BA7A2BB45A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B096486-7457-4911-8280-7BA7A2BB45A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,6 +61,7 @@ Global
 		{47820194-23D6-4FC4-BBAB-766B170101F3} = {3D68A901-0503-4929-9240-4EC695258C82}
 		{23B2E317-1BE5-4288-8187-E73B9EC929B6} = {3D68A901-0503-4929-9240-4EC695258C82}
 		{21A758C7-73ED-42B7-B79C-A0BC1ACB900C} = {3D68A901-0503-4929-9240-4EC695258C82}
+		{4B096486-7457-4911-8280-7BA7A2BB45A0} = {408E8427-4F28-44ED-A568-F8C1D21AFBF0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {49223B87-DD35-4DC4-BFF2-B15AD1DD913F}
