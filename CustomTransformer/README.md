@@ -1,4 +1,4 @@
-# Заданиякмодулю Expressions and IQueryable
+# Задания к модулю Expressions and IQueryable
 
 # ExpressionTree
 
@@ -18,7 +18,7 @@
 Используя возможность конструировать ExpressionTree и выполнять его код, создайте собственный механизм маппинга (копирующего поля (свойства) одного класса в другой).
 
 Приблизительный интерфейс и пример использования приведен ниже (MapperGenerator – фабрика мапперов, Mapper – класс маппинга). Обратите внимание, что в данном примере создается только новый экземпляр конечного класса, но сами данные не копируются.
-
+```c#
 public class Mapper&lt;TSource, TDestination&gt;
 {
     Func&lt;TSource, TDestination&gt; mapFunction;
@@ -56,6 +56,7 @@ public void TestMethod3()
 
     var res = mapper.Map(new Foo());
 }
+```
 
 # IQueryable
 
