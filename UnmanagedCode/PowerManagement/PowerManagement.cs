@@ -102,7 +102,23 @@ namespace PowerManagement
 
         public void ReserveRemoveHibernatioFile(bool flag)
         {
-            throw new NotImplementedException();
+            var lpInputBufer = Marshal.AllocCoTaskMem(sizeof(bool));
+            Marshal.WriteByte(lpInputBufer, Convert.ToByte(flag));
+
+            var status = PowerManagementInterop.CallNtPowerInformation(
+                POWER_INFORMATION_LEVEL.SystemReserveHiberFile,
+                lpInputBufer,
+                sizeof(bool),
+                (IntPtr)null,
+                0);
+
+            if (status != StatusSuccess)
+            {
+                Marshal.FreeCoTaskMem(lpInputBufer);
+                throw new Win32Exception();
+            }
+
+            Marshal.FreeCoTaskMem(lpInputBufer);
         }
 
         public void Sleep()

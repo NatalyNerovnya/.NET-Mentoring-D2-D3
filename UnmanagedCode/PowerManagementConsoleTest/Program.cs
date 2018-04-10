@@ -22,6 +22,8 @@ namespace PowerManagementConsoleTest
             pw.Sleep();
 
             Console.ReadKey();
+            pw.ReserveRemoveHibernatioFile(false);
+            pw.ReserveRemoveHibernatioFile(true);
         }
     }
 }
