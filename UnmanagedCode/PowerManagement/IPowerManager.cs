@@ -2,6 +2,10 @@
 
 namespace PowerManagement
 {
+    [ComVisible(true)]
+    [Guid("a04a2ba2-1c42-4775-b860-eb52ce2bc622")]
+    [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
+
     public interface IPowerManager
     {
         long GetLastSleepTime();
@@ -16,5 +20,4 @@ namespace PowerManagement
 
         void Sleep();
     }
-
 }

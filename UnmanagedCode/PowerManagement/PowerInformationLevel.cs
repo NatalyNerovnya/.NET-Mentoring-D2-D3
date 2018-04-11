@@ -1,4 +1,4 @@
-namespace PowerManagement
+﻿namespace PowerManagement
 {
     enum POWER_INFORMATION_LEVEL : uint
     {

@@ -6,7 +6,7 @@ namespace PowerManagementConsoleTest
     {
         public static void Main(string[] args)
         {
-            var pw = new PowerManagement.PowerManagement();
+            var pw = new PowerManagement.PowerManagementService();
 
             var lastSleepTime = pw.GetLastSleepTime();
             var lastWakeTime = pw.GetLastWakeTime();

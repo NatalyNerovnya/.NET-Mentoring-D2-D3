@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerManagement", "PowerManagement\PowerManagement.csproj", "{4DB023E5-5648-4308-90D0-40CF9AF570B4}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerManagementConsoleTest", "PowerManagementConsoleTest\PowerManagementConsoleTest.csproj", "{8CEC382A-5BEB-4BD7-A8B9-5D4B2C97C2D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerManagement", "PowerManagement\PowerManagement.csproj", "{EC5D462B-DDE3-42F0-B896-F24E8CEC57DC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4DB023E5-5648-4308-90D0-40CF9AF570B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4DB023E5-5648-4308-90D0-40CF9AF570B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4DB023E5-5648-4308-90D0-40CF9AF570B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4DB023E5-5648-4308-90D0-40CF9AF570B4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8CEC382A-5BEB-4BD7-A8B9-5D4B2C97C2D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8CEC382A-5BEB-4BD7-A8B9-5D4B2C97C2D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8CEC382A-5BEB-4BD7-A8B9-5D4B2C97C2D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8CEC382A-5BEB-4BD7-A8B9-5D4B2C97C2D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC5D462B-DDE3-42F0-B896-F24E8CEC57DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC5D462B-DDE3-42F0-B896-F24E8CEC57DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC5D462B-DDE3-42F0-B896-F24E8CEC57DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC5D462B-DDE3-42F0-B896-F24E8CEC57DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

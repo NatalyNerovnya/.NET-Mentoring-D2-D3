@@ -50,7 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PowerManagement\PowerManagement.csproj">
-      <Project>{4db023e5-5648-4308-90d0-40cf9af570b4}</Project>
+      <Project>{ec5d462b-dde3-42f0-b896-f24e8cec57dc}</Project>
       <Name>PowerManagement</Name>
     </ProjectReference>
   </ItemGroup>

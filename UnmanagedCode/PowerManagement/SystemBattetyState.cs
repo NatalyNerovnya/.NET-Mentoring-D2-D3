@@ -3,6 +3,8 @@ using System.Runtime.InteropServices;
 
 namespace PowerManagement
 {
+    [ComVisible(true)]
+    [Guid("a3d489c8-d6cc-4a10-ba99-ac09909f85fa")]
     public struct SYSTEM_BATTERY_STATE
     {
         [MarshalAs(UnmanagedType.I1)]

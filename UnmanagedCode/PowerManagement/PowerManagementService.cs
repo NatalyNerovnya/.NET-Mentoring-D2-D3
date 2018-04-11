@@ -4,7 +4,11 @@ using System.Runtime.InteropServices;
 
 namespace PowerManagement
 {
-    public class PowerManagement : IPowerManager
+    [ComVisible(true)]
+    [Guid("40979f4e-dedf-47ba-8726-eda9d9d6f1ec")]
+    [ClassInterface(ClassInterfaceType.None)]
+
+    public class PowerManagementService : IPowerManager
     {
         private const int StatusSuccess = 0;
 
