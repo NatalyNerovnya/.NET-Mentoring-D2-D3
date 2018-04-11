@@ -3,8 +3,8 @@
 namespace PowerManagement
 {
     [ComVisible(true)]
-    [Guid("a04a2ba2-1c42-4775-b860-eb52ce2bc622")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
+    [Guid("ECA83D70-C317-4EAD-B505-F800981CDA6D")]
+    [InterfaceType(ComInterfaceType.InterfaceIsDual)]
 
     public interface IPowerManager
     {

@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 namespace PowerManagement
 {
     [ComVisible(true)]
-    [Guid("40979f4e-dedf-47ba-8726-eda9d9d6f1ec")]
+    [Guid("9D64C6A7-D452-42E3-9FF8-02246BB2470B")]
     [ClassInterface(ClassInterfaceType.None)]
 
     public class PowerManagementService : IPowerManager
