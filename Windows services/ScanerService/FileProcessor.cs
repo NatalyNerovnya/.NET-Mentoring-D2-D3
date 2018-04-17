@@ -25,9 +25,10 @@ namespace ScanerService
 
                     using (var image = XImage.FromFile(files[i]))
                     {
-                        XGraphics gfx = XGraphics.FromPdfPage(page);
-
-                        gfx.DrawImage(image, 0, 0);
+                        using (var gfx = XGraphics.FromPdfPage(page))
+                        {
+                            gfx.DrawImage(image, 0, 0);
+                        }
                     }
                 }
 

@@ -8,5 +8,7 @@ namespace ScanerService.Interafces
         FileSystemWatcher GetFileSystemWatcher(string path);
 
         void MoveFile(string filePath, string destenitionPath);
+
+        void RemoveFile(string path);
     }
 }

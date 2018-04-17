@@ -41,6 +41,14 @@ namespace ScanerService
 
         }
 
+        public void RemoveFile(string path)
+        {
+            if (File.Exists(path) && TryOpen(path, 3))
+            {
+                File.Delete(path);
+            }
+        }
+
         private bool TryOpen(string fileName, int tryCount)
         {
             for (int i = 0; i < tryCount; i++)

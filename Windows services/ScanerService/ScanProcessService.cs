@@ -1,11 +1,13 @@
 ﻿using ScanerService.Interafces;
 using ScanerService.Interfaces;
 using System.Configuration;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Timers;
 using Topshelf;
+using ZXing;
 
 namespace ScanerService
 {
@@ -78,24 +80,35 @@ namespace ScanerService
 
         private void HandleFile(object sender, FileSystemEventArgs args)
         {
+            timer.Stop();
+
             var fileName = args.Name;
+            var filePath = args.FullPath;
+            var isBarcode = CheckCode(filePath);
 
-            if (!CheckImageName(fileName))
+            if (!CheckImageName(fileName) && !isBarcode)
             {
-                HandleError(args.FullPath);
-            }
+                HandleError(filePath);
+            }           
 
-            timer.Stop();            
-
-            if (currentFileNumber > 0 && GetImageNumber(fileName) != currentFileNumber + 1)
+            if (isBarcode || (currentFileNumber > 0 && GetImageNumber(fileName) != currentFileNumber + 1))
             {
-                var files = Directory.GetFiles(Path.GetDirectoryName(args.FullPath));
-                var filesToProccess = files.ToList().Where(x => x != args.FullPath).ToArray();
+                var files = Directory.GetFiles(Path.GetDirectoryName(filePath));
+                var filesToProccess = files.ToList().Where(x => x != filePath).ToArray();
 
                 ProcessFiles(filesToProccess);
+
+                if (isBarcode)
+                {
+                    _directoryService.RemoveFile(filePath);
+                }
             }
 
-            currentFileNumber = GetImageNumber(fileName);
+            if (!isBarcode)
+            {
+                currentFileNumber = GetImageNumber(fileName);
+            }
+
             timer.Start();
         }
 
@@ -118,16 +131,30 @@ namespace ScanerService
             }
         }
 
+        private bool CheckCode(string file)
+        {
+            var reader = new BarcodeReader();
+
+            using (var barcodeBitmap = (Bitmap)Image.FromFile(file))
+            {
+                var result = reader.Decode(barcodeBitmap);
+
+                if (result != null)
+                    return result.Text == ConfigurationManager.AppSettings["CodeString"];
+                return false;
+            }
+            
+        }
+
         private bool CheckImageName(string imageName)
         {
+            var a = Regex.IsMatch(imageName, _imageNamePattern);
             return Regex.IsMatch(imageName, _imageNamePattern);
         }
 
         private int GetImageNumber(string imageName)
         {
             return int.Parse(Regex.Match(imageName, @"\d+").Value);
-        }
-
-
+        }        
     }
 }
