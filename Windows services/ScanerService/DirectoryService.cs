@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using ScanerService.Interafces;
 using System.Threading;
 
@@ -8,26 +6,21 @@ namespace ScanerService
 {
     public class DirectoryService : IDirectoryService
     {
-        public List<FileSystemWatcher> GetFileSystemWatchers(string[] paths)
+        public FileSystemWatcher GetFileSystemWatcher(string path)
         {
-            var watchers = new List<FileSystemWatcher>();
-
-            foreach (var path in paths)
+            if (!Directory.Exists(path))
             {
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
-
-                watchers.Add(new FileSystemWatcher()
-                {
-                    Filter = "*.jpg",
-                    NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName,
-                    Path = path
-                });
+                Directory.CreateDirectory(path);
             }
 
-            return watchers;
+            var watcher = new FileSystemWatcher()
+            {
+                Filter = "*.jpg",
+                NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName,
+                Path = path
+            };
+
+            return watcher;
         }
 
         public void MoveFile(string filePath, string destenitionPath)

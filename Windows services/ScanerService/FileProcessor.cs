@@ -3,7 +3,6 @@ using PdfSharp.Pdf;
 using PdfSharp.Drawing;
 using System.Configuration;
 using System.IO;
-using System.Threading;
 
 namespace ScanerService
 {
@@ -12,6 +11,8 @@ namespace ScanerService
         private static int counter = 1;
         public void Process(string[] files)
         {
+            if (files.Length == 0) return;
+
             var folder = ConfigurationManager.AppSettings["SuccessFolder"];
 
             using (var document = new PdfDocument())

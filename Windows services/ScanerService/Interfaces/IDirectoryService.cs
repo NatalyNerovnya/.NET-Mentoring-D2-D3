@@ -5,7 +5,7 @@ namespace ScanerService.Interafces
 {
     public interface IDirectoryService
     {
-        List<FileSystemWatcher> GetFileSystemWatchers(string[] paths);
+        FileSystemWatcher GetFileSystemWatcher(string path);
 
         void MoveFile(string filePath, string destenitionPath);
     }
