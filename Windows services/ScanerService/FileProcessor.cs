@@ -30,7 +30,7 @@ namespace ScanerService
                     }
                 }
 
-                document.Save(Path.Combine(folder, $"scan_{counter}.pdf"));
+                document.Save(Path.Combine(folder, $"scan_{counter++}.pdf"));
             }
         }
     }

@@ -3,6 +3,8 @@ using ScanerService.Interfaces;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using Topshelf;
 
 namespace ScanerService
@@ -12,12 +14,16 @@ namespace ScanerService
         private List<FileSystemWatcher> watchers;
         private IDirectoryService _directoryService;
         private IFileProcessor _fileProcessor;
+        private string _imageNamePattern;
+        private int currentFileNumber;
 
         public ScanProcessService()
         {
             _directoryService = new DirectoryService();
             _fileProcessor = new FileProcessor();
             watchers = new List<FileSystemWatcher>();
+            _imageNamePattern = ConfigurationManager.AppSettings["FileNamePattern"];
+            currentFileNumber = 0;
         }
 
         public bool Start(HostControl hostControl)
@@ -48,7 +54,6 @@ namespace ScanerService
             {
                 watcher.Changed += HandleFile;
                 watcher.Created += HandleFile;
-                watcher.Error += HandleError;
 
                 watcher.EnableRaisingEvents = true;
             }
@@ -56,25 +61,47 @@ namespace ScanerService
 
         private void HandleFile(object sender, FileSystemEventArgs args)
         {
-            var files = Directory.GetFiles(Path.GetDirectoryName(args.FullPath));
+            var fileName = args.Name;
 
-            if (files.Length == 2)
+            if (!CheckImageName(fileName))
             {
-                _fileProcessor.Process(files);
-
+                HandleError(args.FullPath);
+            }        
+            
+            if (currentFileNumber > 0 && GetImageNumber(fileName) != currentFileNumber + 1)
+            {
+                var files = Directory.GetFiles(Path.GetDirectoryName(args.FullPath));
                 var successFolder = ConfigurationManager.AppSettings["SuccessFolder"];
-                foreach (var file in files)
+
+                var filesToProccess = files.ToList().Where(x => x != args.FullPath).ToArray();
+                _fileProcessor.Process(filesToProccess);
+                
+                foreach (var file in filesToProccess)
                 {
                     _directoryService.MoveFile(file, successFolder);
                 }
             }
 
-            
+            currentFileNumber = GetImageNumber(fileName);            
         }
 
-        private void HandleError(object sender, ErrorEventArgs args)
+        private void HandleError(string path)
         {
-            //TODO: log error
+            var errorFolder = ConfigurationManager.AppSettings["ErrorFolder"];
+
+            _directoryService.MoveFile(path, errorFolder);
         }
+
+        private bool CheckImageName(string imageName)
+        {
+            return Regex.IsMatch(imageName, _imageNamePattern);
+        }
+
+        private int GetImageNumber(string imageName)
+        {
+            return int.Parse(Regex.Match(imageName, @"\d+").Value);
+        }
+
+
     }
 }

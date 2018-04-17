@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using ScanerService.Interafces;
+using System.Threading;
 
 namespace ScanerService
 {
@@ -40,8 +41,32 @@ namespace ScanerService
 
             var destinitionFile = Path.Combine(destenitionPath, Path.GetFileName(filePath));
 
-            File.Move(filePath, destinitionFile);
+            if(TryOpen(filePath, 3))
+            {
+                File.Move(filePath, destinitionFile);
+            }           
 
         }
+
+        private bool TryOpen(string fileName, int tryCount)
+        {
+            for (int i = 0; i < tryCount; i++)
+            {
+                try
+                {
+                    var file = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.None);
+                    file.Close();
+
+                    return true;
+                }
+                catch (IOException)
+                {
+                    Thread.Sleep(5000);
+                }
+            }
+
+            return false;
+        }
+
     }
 }
