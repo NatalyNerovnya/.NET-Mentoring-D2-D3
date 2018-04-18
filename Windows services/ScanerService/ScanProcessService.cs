@@ -1,4 +1,5 @@
-﻿using ScanerService.Interafces;
+﻿using System.Collections.Generic;
+using ScanerService.Interafces;
 using ScanerService.Interfaces;
 using System.Configuration;
 using System.Drawing;
@@ -126,7 +127,7 @@ namespace ScanerService
 
             _directoryService.CreateDirectory(successFolder);
 
-            _fileProcessor.Process(files.Where(x => !CheckCode(x)).ToArray());
+            _fileProcessor.Process(files.Where(CheckImageName).ToArray());
 
             foreach (var file in files)
             {
@@ -143,22 +144,31 @@ namespace ScanerService
             var files = Directory.EnumerateFiles(watchedFolder)
                 .Where(x => CheckImageName(Path.GetFileName(x)) || CheckCode(x)).ToList();
             var fileNumber = 0;
+            var filesInFolder = new List<string>();
+
+            files.ForEach(x => filesInFolder.Add(x));
 
             foreach (var file in files)
             {
-                if (CheckCode(file) || (fileNumber > 0 && GetImageNumber(file) != fileNumber + 1))
+                var isBarcode = CheckCode(file);
+                if (isBarcode || (fileNumber > 0 && GetImageNumber(file) != fileNumber + 1))
                 {
-                    var filesToFile = files.TakeWhile(x => x == file).Where(x => !CheckCode(x)).ToArray();
+                    var filesToFile = filesInFolder.TakeWhile(x => x != file).Where(CheckImageName).ToArray();
 
                     ProcessFiles(filesToFile);
 
-                    if (CheckCode(file))
+                    filesToFile.ToList().ForEach(f => filesInFolder.Remove(f));
+
+                    if (isBarcode)
                     {
                         _directoryService.RemoveFile(file);
                     }
                 }
 
-                fileNumber = GetImageNumber(file);
+                if (!isBarcode)
+                {
+                    fileNumber = GetImageNumber(file);
+                }
             }
         }
 
