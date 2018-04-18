@@ -10,5 +10,7 @@ namespace ScanerService.Interafces
         void MoveFile(string filePath, string destenitionPath);
 
         void RemoveFile(string path);
+
+        void CreateDirectory(string path);
     }
 }

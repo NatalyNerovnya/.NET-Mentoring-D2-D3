@@ -8,7 +8,7 @@ namespace ScanerService
 {
     public class FileProcessor : IFileProcessor
     {
-        private static int counter = 1;
+        private static int _counter = 1;
         public void Process(string[] files)
         {
             if (files.Length == 0) return;
@@ -17,7 +17,7 @@ namespace ScanerService
 
             using (var document = new PdfDocument())
             {
-                for (int i = 0; i < files.Length; i++)
+                for (var i = 0; i < files.Length; i++)
                 {
                     document.Pages.Add(new PdfPage());
 
@@ -32,7 +32,7 @@ namespace ScanerService
                     }
                 }
 
-                document.Save(Path.Combine(folder, $"scan_{counter++}.pdf"));
+                document.Save(Path.Combine(folder, $"scan_{_counter++}.pdf"));
             }
         }
     }

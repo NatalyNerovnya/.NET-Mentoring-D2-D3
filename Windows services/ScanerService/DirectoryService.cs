@@ -8,14 +8,10 @@ namespace ScanerService
     {
         public FileSystemWatcher GetFileSystemWatcher(string path)
         {
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
+            CreateDirectory(path);
 
             var watcher = new FileSystemWatcher()
             {
-                Filter = "*.jpg",
                 NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName,
                 Path = path
             };
@@ -25,20 +21,16 @@ namespace ScanerService
 
         public void MoveFile(string filePath, string destenitionPath)
         {
-            if (!File.Exists(filePath)) return;
+            if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath)) return;
 
-            if (!Directory.Exists(destenitionPath))
-            {
-                Directory.CreateDirectory(destenitionPath);
-            }
+           CreateDirectory(destenitionPath);
 
             var destinitionFile = Path.Combine(destenitionPath, Path.GetFileName(filePath));
 
             if(TryOpen(filePath, 3))
             {
                 File.Move(filePath, destinitionFile);
-            }           
-
+            }      
         }
 
         public void RemoveFile(string path)
@@ -46,6 +38,14 @@ namespace ScanerService
             if (File.Exists(path) && TryOpen(path, 3))
             {
                 File.Delete(path);
+            }
+        }
+
+        public void CreateDirectory(string path)
+        {
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
             }
         }
 
@@ -68,6 +68,5 @@ namespace ScanerService
 
             return false;
         }
-
     }
 }

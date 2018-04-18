@@ -13,24 +13,25 @@ namespace ScanerService
 {
     public class ScanProcessService : ServiceControl
     {
-        private FileSystemWatcher watcher;
-        private IDirectoryService _directoryService;
-        private IFileProcessor _fileProcessor;
-        private string _imageNamePattern;
-        private int currentFileNumber;
-        private Timer timer;
+        private FileSystemWatcher _watcher;
+        private readonly IDirectoryService _directoryService;
+        private readonly IFileProcessor _fileProcessor;
+        private readonly string _imageNamePattern;
+        private int _currentFileNumber;
+        private Timer _timer;
 
         public ScanProcessService()
         {
             _directoryService = new DirectoryService();
             _fileProcessor = new FileProcessor();
             _imageNamePattern = ConfigurationManager.AppSettings["FileNamePattern"];
-            currentFileNumber = 0;
+            _currentFileNumber = 0;
         }
 
         public bool Start(HostControl hostControl)
         {
-            //TODO: process already existed files 
+            ProcessWaitingFiles();
+
             var path = ConfigurationManager.AppSettings["Folders"];
             InitializeWatcher(path);
             InitializeTimer(path);
@@ -40,9 +41,9 @@ namespace ScanerService
 
         public bool Stop(HostControl hostControl)
         {
-            watcher.EnableRaisingEvents = false;
+            _watcher.EnableRaisingEvents = false;
 
-            timer.Stop();
+            _timer.Stop();
 
             return true;
         }
@@ -50,37 +51,37 @@ namespace ScanerService
 
         private void InitializeWatcher(string path)
         {
-            watcher = _directoryService.GetFileSystemWatcher(path);
+            _watcher = _directoryService.GetFileSystemWatcher(path);
 
-            watcher.Changed += HandleFile;
-            watcher.Created += HandleFile;
+            _watcher.Changed += HandleFile;
+            _watcher.Created += HandleFile;
 
-            watcher.EnableRaisingEvents = true;
+            _watcher.EnableRaisingEvents = true;
         }
 
         private void InitializeTimer(string path)
         {
             var timerTime = double.Parse(ConfigurationManager.AppSettings["TimerTime"]);
-            timer = new Timer()
+            _timer = new Timer()
             {
                 Interval = timerTime,
                 AutoReset = true
             };
 
-            timer.Elapsed += (sender, args) =>
+            _timer.Elapsed += (sender, args) =>
             {
-                timer.Stop();
+                _timer.Stop();
                 var files = Directory.GetFiles(path);
                 ProcessFiles(files);
-                timer.Start();
+                _timer.Start();
             };
 
-            timer.Start();
+            _timer.Start();
         }
 
         private void HandleFile(object sender, FileSystemEventArgs args)
         {
-            timer.Stop();
+            _timer.Stop();
 
             var fileName = args.Name;
             var filePath = args.FullPath;
@@ -91,9 +92,9 @@ namespace ScanerService
                 HandleError(filePath);
             }           
 
-            if (isBarcode || (currentFileNumber > 0 && GetImageNumber(fileName) != currentFileNumber + 1))
+            if (isBarcode || (_currentFileNumber > 0 && GetImageNumber(fileName) != _currentFileNumber + 1))
             {
-                var files = Directory.GetFiles(Path.GetDirectoryName(filePath));
+                var files = Directory.GetFiles(Path.GetDirectoryName(filePath) ?? "");
                 var filesToProccess = files.ToList().Where(x => x != filePath).ToArray();
 
                 ProcessFiles(filesToProccess);
@@ -106,10 +107,10 @@ namespace ScanerService
 
             if (!isBarcode)
             {
-                currentFileNumber = GetImageNumber(fileName);
+                _currentFileNumber = GetImageNumber(fileName);
             }
 
-            timer.Start();
+            _timer.Start();
         }
 
         private void HandleError(string path)
@@ -123,11 +124,41 @@ namespace ScanerService
         {           
             var successFolder = ConfigurationManager.AppSettings["SuccessFolder"];
 
-            _fileProcessor.Process(files);
+            _directoryService.CreateDirectory(successFolder);
+
+            _fileProcessor.Process(files.Where(x => !CheckCode(x)).ToArray());
 
             foreach (var file in files)
             {
                 _directoryService.MoveFile(file, successFolder);
+            }
+        }
+
+        private void ProcessWaitingFiles()
+        {
+            var watchedFolder = ConfigurationManager.AppSettings["Folders"];
+
+            if (!Directory.Exists(watchedFolder)) return;
+
+            var files = Directory.EnumerateFiles(watchedFolder)
+                .Where(x => CheckImageName(Path.GetFileName(x)) || CheckCode(x)).ToList();
+            var fileNumber = 0;
+
+            foreach (var file in files)
+            {
+                if (CheckCode(file) || (fileNumber > 0 && GetImageNumber(file) != fileNumber + 1))
+                {
+                    var filesToFile = files.TakeWhile(x => x == file).Where(x => !CheckCode(x)).ToArray();
+
+                    ProcessFiles(filesToFile);
+
+                    if (CheckCode(file))
+                    {
+                        _directoryService.RemoveFile(file);
+                    }
+                }
+
+                fileNumber = GetImageNumber(file);
             }
         }
 
@@ -148,7 +179,6 @@ namespace ScanerService
 
         private bool CheckImageName(string imageName)
         {
-            var a = Regex.IsMatch(imageName, _imageNamePattern);
             return Regex.IsMatch(imageName, _imageNamePattern);
         }
 
