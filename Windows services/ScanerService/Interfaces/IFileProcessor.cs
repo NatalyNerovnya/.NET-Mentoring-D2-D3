@@ -2,6 +2,6 @@
 {
     public interface IFileProcessor
     {
-        void Process(string[] files);
+        void Process(string[] files, string destinitionFolder);
     }
 }

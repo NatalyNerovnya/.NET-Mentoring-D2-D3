@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using ScanerService.Interafces;
 using ScanerService.Interfaces;
-using System.Configuration;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -9,23 +8,24 @@ using System.Text.RegularExpressions;
 using System.Timers;
 using Topshelf;
 using ZXing;
+using Configuration = ScanerService.Helpers.Configuration;
 
 namespace ScanerService
 {
     public class ScanProcessService : ServiceControl
     {
+        private readonly Configuration _configuration;
         private FileSystemWatcher _watcher;
         private readonly IDirectoryService _directoryService;
         private readonly IFileProcessor _fileProcessor;
-        private readonly string _imageNamePattern;
         private int _currentFileNumber;
         private Timer _timer;
 
-        public ScanProcessService()
+        public ScanProcessService(Configuration config)
         {
+            _configuration = config;
             _directoryService = new DirectoryService();
             _fileProcessor = new FileProcessor();
-            _imageNamePattern = ConfigurationManager.AppSettings["FileNamePattern"];
             _currentFileNumber = 0;
         }
 
@@ -33,7 +33,7 @@ namespace ScanerService
         {
             ProcessWaitingFiles();
 
-            var path = ConfigurationManager.AppSettings["Folders"];
+            var path = _configuration.Folder;
             InitializeWatcher(path);
             InitializeTimer(path);
 
@@ -62,7 +62,7 @@ namespace ScanerService
 
         private void InitializeTimer(string path)
         {
-            var timerTime = double.Parse(ConfigurationManager.AppSettings["TimerTime"]);
+            var timerTime = _configuration.TimerValue;
             _timer = new Timer()
             {
                 Interval = timerTime,
@@ -116,18 +116,18 @@ namespace ScanerService
 
         private void HandleError(string path)
         {
-            var errorFolder = ConfigurationManager.AppSettings["ErrorFolder"];
+            var errorFolder = _configuration.ErrorFolder;
 
             _directoryService.MoveFile(path, errorFolder);
         }
 
         private void ProcessFiles(string[] files)
         {           
-            var successFolder = ConfigurationManager.AppSettings["SuccessFolder"];
+            var successFolder = _configuration.SuccessFolder;
 
             _directoryService.CreateDirectory(successFolder);
 
-            _fileProcessor.Process(files.Where(CheckImageName).ToArray());
+            _fileProcessor.Process(files.Where(CheckImageName).ToArray(), successFolder);
 
             foreach (var file in files)
             {
@@ -137,7 +137,7 @@ namespace ScanerService
 
         private void ProcessWaitingFiles()
         {
-            var watchedFolder = ConfigurationManager.AppSettings["Folders"];
+            var watchedFolder = _configuration.Folder;
 
             if (!Directory.Exists(watchedFolder)) return;
 
@@ -181,7 +181,7 @@ namespace ScanerService
                 var result = reader.Decode(barcodeBitmap);
 
                 if (result != null)
-                    return result.Text == ConfigurationManager.AppSettings["CodeString"];
+                    return result.Text == _configuration.BarcodeString;
                 return false;
             }
             
@@ -189,7 +189,7 @@ namespace ScanerService
 
         private bool CheckImageName(string imageName)
         {
-            return Regex.IsMatch(imageName, _imageNamePattern);
+            return Regex.IsMatch(imageName, _configuration.FileNamePattern);
         }
 
         private int GetImageNumber(string imageName)

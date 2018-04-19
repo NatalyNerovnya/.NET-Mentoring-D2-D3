@@ -1,7 +1,6 @@
 ﻿using ScanerService.Interfaces;
 using PdfSharp.Pdf;
 using PdfSharp.Drawing;
-using System.Configuration;
 using System.IO;
 
 namespace ScanerService
@@ -9,12 +8,10 @@ namespace ScanerService
     public class FileProcessor : IFileProcessor
     {
         private static int _counter = 1;
-        public void Process(string[] files)
+        public void Process(string[] files, string destinitionFolder)
         {
             if (files.Length == 0) return;
-
-            var folder = ConfigurationManager.AppSettings["SuccessFolder"];
-
+            
             using (var document = new PdfDocument())
             {
                 for (var i = 0; i < files.Length; i++)
@@ -32,7 +29,7 @@ namespace ScanerService
                     }
                 }
 
-                document.Save(Path.Combine(folder, $"scan_{_counter++}.pdf"));
+                document.Save(Path.Combine(destinitionFolder, $"scan_{_counter++}.pdf"));
             }
         }
     }

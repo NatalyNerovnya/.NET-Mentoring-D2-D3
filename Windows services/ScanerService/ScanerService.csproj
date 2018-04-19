@@ -76,6 +76,7 @@
   <ItemGroup>
     <Compile Include="DirectoryService.cs" />
     <Compile Include="FileProcessor.cs" />
+    <Compile Include="Helpers\Configuration.cs" />
     <Compile Include="Interfaces\IDirectoryService.cs" />
     <Compile Include="Interfaces\IFileProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
