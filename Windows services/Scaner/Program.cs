@@ -14,7 +14,7 @@ namespace Scaner
                 , ConfigurationManager.AppSettings["SuccessFolder"]
                 , ConfigurationManager.AppSettings["ErrorFolder"]
                 , ConfigurationManager.AppSettings["FileNamePattern"]
-                , Double.Parse(ConfigurationManager.AppSettings["TimerTime"])
+                , int.Parse(ConfigurationManager.AppSettings["TimerTime"])
                 , ConfigurationManager.AppSettings["CodeString"]);
 
             HostFactory.Run(x =>

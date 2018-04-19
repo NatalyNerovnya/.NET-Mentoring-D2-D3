@@ -2,7 +2,7 @@
 {
     public class Configuration
     {
-        public Configuration(string folder, string successFolder, string errorFolder, string fileNamePattern, double timerValue, string barcodeString)
+        public Configuration(string folder, string successFolder, string errorFolder, string fileNamePattern, int timerValue, string barcodeString)
         {
             Folder = folder;
             SuccessFolder = successFolder;
@@ -16,7 +16,7 @@
         public string SuccessFolder { get; set; }
         public string ErrorFolder { get; set; }
         public string FileNamePattern { get; set; }
-        public double TimerValue { get; set; }
+        public int TimerValue { get; set; }
         public string BarcodeString { get; set; }
     }
 }
