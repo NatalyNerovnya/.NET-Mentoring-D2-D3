@@ -33,13 +33,14 @@ namespace ScanerService
 
         public bool Start(HostControl hostControl)
         {
+            var path = _configuration.Folder;
+
             _directoryService.CreateDirectory(_configuration.SuccessFolder);
             _directoryService.CreateDirectory(_configuration.ErrorFolder);
-            _directoryService.CreateDirectory(_configuration.Folder);
+            _directoryService.CreateDirectory(path);
 
-            _fileProcessor.ProcessWaitingFiles(_rules.Where(r => r.GetType() != typeof(TimerRule)).ToList());
-
-            var path = _configuration.Folder;
+            _fileProcessor.ProcessWaitingFiles(path, _rules.Where(r => r.GetType() != typeof(TimerRule)).ToList());
+            
             InitializeWatcher(path);
 
             return true;

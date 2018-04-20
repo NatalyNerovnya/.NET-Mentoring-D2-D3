@@ -8,8 +8,6 @@ namespace ScanerService
     {
         public FileSystemWatcher GetFileSystemWatcher(string path)
         {
-            CreateDirectory(path);
-
             var watcher = new FileSystemWatcher()
             {
                 NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName,

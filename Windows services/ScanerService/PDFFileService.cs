@@ -33,7 +33,6 @@ namespace ScanerService
                     gfx.DrawImage(image, 0, 0);
                 }
             }
-
         }
 
         public void SaveDocument()

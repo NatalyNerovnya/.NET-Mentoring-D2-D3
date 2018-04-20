@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using ScanerService.Interfaces;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using ScanerService.Interafces;
 
@@ -28,10 +29,27 @@ namespace ScanerService
         {
             //As files should come from scanner their creation time should be around now (for TimerRule)
             File.SetCreationTime(filePath, DateTime.Now);
+            
+            CheckAndProcess(filePath, rules);
+        }
 
+        public void ProcessWaitingFiles(string watchFolder, List<IInteruptRule> rules)
+        {
+            var files = Directory.EnumerateFiles(watchFolder).ToList();
+
+            if (!files.Any()) return;
+            
+            foreach (var file in files)
+            {
+                CheckAndProcess(file, rules);
+            }
+        }
+
+        private void CheckAndProcess(string filePath, IEnumerable<IInteruptRule> rules)
+        {
             foreach (var rule in rules)
             {
-                if (CheckAndProcess(rule, filePath))break;
+                if (CheckRules(rule, filePath)) break;
             }
 
             if (CheckImageName(filePath))
@@ -48,34 +66,7 @@ namespace ScanerService
             }
         }
 
-        public void ProcessWaitingFiles(List<IInteruptRule> rules)
-        {
-            //var files = Directory.EnumerateFiles(_watchedFolder).ToList();
-
-            //if (!files.Any()) return;
-
-            //var filesInFolder = new List<string>();
-
-            //files.ForEach(x => filesInFolder.Add(x));
-
-            //foreach (var file in files)
-            //{
-            //    foreach (var rule in rules)
-            //    {
-            //        var filesToFile = filesInFolder.TakeWhile(x => x != file).Where(CheckImageName).ToList();
-
-            //        filesToFile.ForEach((f) =>
-            //        {
-            //            if (CheckAndProcess(rule, f))
-            //            {
-            //                filesInFolder.Remove(f);
-            //            }
-            //        });
-            //    }
-            //}
-        }
-
-        private bool CheckAndProcess(IInteruptRule rule, string filePath)
+        private bool CheckRules(IInteruptRule rule, string filePath)
         {
             if (rule.IsMatch(filePath))
             {

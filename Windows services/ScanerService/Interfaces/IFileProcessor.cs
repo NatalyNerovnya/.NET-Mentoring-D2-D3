@@ -6,6 +6,6 @@ namespace ScanerService.Interfaces
     {
         void ProcessFiles(string filePath, List<IInteruptRule> rules);
 
-        void ProcessWaitingFiles(List<IInteruptRule> rules);
+        void ProcessWaitingFiles(string watchedFolder, List<IInteruptRule> rules);
     }
 }
