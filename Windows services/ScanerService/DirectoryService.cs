@@ -23,13 +23,11 @@ namespace ScanerService
         {
             if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath)) return;
 
-           CreateDirectory(destenitionPath);
-
             var destinitionFile = Path.Combine(destenitionPath, Path.GetFileName(filePath));
 
             if(TryOpen(filePath, 3))
             {
-                File.Move(filePath, destinitionFile);
+                MoveOrUpdate(filePath, destinitionFile);
             }      
         }
 
@@ -47,6 +45,16 @@ namespace ScanerService
             {
                 Directory.CreateDirectory(path);
             }
+        }
+
+        private void MoveOrUpdate(string file, string destinitionFile)
+        {
+            if (TryOpen(file, 3) && File.Exists(destinitionFile))
+            {
+                File.Delete(destinitionFile);
+            }
+
+            File.Move(file, destinitionFile);
         }
 
         private bool TryOpen(string fileName, int tryCount)

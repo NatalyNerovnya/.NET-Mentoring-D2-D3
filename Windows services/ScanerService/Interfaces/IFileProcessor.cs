@@ -1,7 +1,11 @@
-﻿namespace ScanerService.Interfaces
+﻿using System.Collections.Generic;
+
+namespace ScanerService.Interfaces
 {
     public interface IFileProcessor
     {
-        void Process(string[] files, string destinitionFolder);
+        void ProcessFiles(string filePath, List<IInteruptRule> rules);
+
+        void ProcessWaitingFiles(List<IInteruptRule> rules);
     }
 }
