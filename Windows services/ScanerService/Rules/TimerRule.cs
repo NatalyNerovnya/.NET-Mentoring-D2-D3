@@ -16,7 +16,7 @@ namespace ScanerService.Rules
 
         public bool IsMatch(string file)
         {
-            var creationTime = File.GetCreationTime(file);
+            var creationTime = DateTime.UtcNow;
 
             if (_lastUploadFileTime == DateTime.MinValue)
             {

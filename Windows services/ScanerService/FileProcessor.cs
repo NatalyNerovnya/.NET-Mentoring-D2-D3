@@ -29,26 +29,6 @@ namespace ScanerService
 
         public void ProcessFiles(string filePath, List<IInteruptRule> rules)
         {
-            //As files should come from scanner their creation time should be around now (for TimerRule)
-            File.SetCreationTime(filePath, DateTime.Now);
-            
-            CheckAndProcess(filePath, rules);
-        }
-
-        public void ProcessWaitingFiles(string watchFolder, List<IInteruptRule> rules)
-        {
-            var files = Directory.EnumerateFiles(watchFolder).ToList();
-
-            if (!files.Any()) return;
-            
-            foreach (var file in files)
-            {
-                CheckAndProcess(file, rules);
-            }
-        }
-
-        private void CheckAndProcess(string filePath, IEnumerable<IInteruptRule> rules)
-        {
             foreach (var rule in rules)
             {
                 if (CheckRules(rule, filePath)) break;
@@ -65,6 +45,18 @@ namespace ScanerService
                 {
                     _directoryService.MoveFile(filePath, _errorFolder);
                 }
+            }
+        }
+
+        public void ProcessWaitingFiles(string watchFolder, List<IInteruptRule> rules)
+        {
+            var files = Directory.EnumerateFiles(watchFolder).ToList();
+
+            if (!files.Any()) return;
+            
+            foreach (var file in files)
+            {
+                ProcessFiles(file, rules);
             }
         }
 
