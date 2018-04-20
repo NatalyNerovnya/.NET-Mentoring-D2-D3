@@ -11,6 +11,8 @@ namespace ScanerService.Interafces
 
         void RemoveFile(string path);
 
+        bool TryOpen(string filePath, int retryTimes);
+
         void CreateDirectory(string path);
     }
 }

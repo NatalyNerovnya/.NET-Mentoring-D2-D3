@@ -16,20 +16,11 @@ namespace ScanerService.Rules
 
         public bool IsMatch(string file)
         {
-            var fileName = Path.GetFileName(file);
-
-            if (!CheckImageName(fileName)) return false;
-
             var fileNumber = GetImageNumber(Path.GetFileName(file));
             var result = _curentFileNumber > 0 && fileNumber != _curentFileNumber + 1;
             _curentFileNumber = fileNumber;
 
             return result;
-        }
-
-        private bool CheckImageName(string imageName)
-        {
-            return Regex.IsMatch(imageName, _fileNamePattern);
         }
 
         private int GetImageNumber(string imageName)

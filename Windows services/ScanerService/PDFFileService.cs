@@ -49,7 +49,7 @@ namespace ScanerService
         {
             if (_isFileCreated) return;
 
-            using (_document = new PdfDocument()) { }
+            _document = new PdfDocument();
 
             _isFileCreated = true;
         }

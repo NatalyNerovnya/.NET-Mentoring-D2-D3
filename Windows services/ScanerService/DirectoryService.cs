@@ -45,17 +45,7 @@ namespace ScanerService
             }
         }
 
-        private void MoveOrUpdate(string file, string destinitionFile)
-        {
-            if (TryOpen(file, 3) && File.Exists(destinitionFile))
-            {
-                File.Delete(destinitionFile);
-            }
-
-            File.Move(file, destinitionFile);
-        }
-
-        private bool TryOpen(string fileName, int tryCount)
+        public bool TryOpen(string fileName, int tryCount)
         {
             for (var i = 0; i < tryCount; i++)
             {
@@ -73,6 +63,16 @@ namespace ScanerService
             }
 
             return false;
+        }
+
+        private void MoveOrUpdate(string file, string destinitionFile)
+        {
+            if (TryOpen(file, 3) && File.Exists(destinitionFile))
+            {
+                File.Delete(destinitionFile);
+            }
+
+            File.Move(file, destinitionFile);
         }
     }
 }

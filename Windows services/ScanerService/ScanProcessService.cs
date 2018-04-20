@@ -68,8 +68,10 @@ namespace ScanerService
         private void HandleFile(object sender, FileSystemEventArgs args)
         {
             var filePath = args.FullPath;
-
-            _fileProcessor.ProcessFiles(filePath, _rules);
+            if (_directoryService.TryOpen(filePath, 3))
+            {
+                _fileProcessor.ProcessFiles(filePath, _rules);
+            }
         }
     }
 }
