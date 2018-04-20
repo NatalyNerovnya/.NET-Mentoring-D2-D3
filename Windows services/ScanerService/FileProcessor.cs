@@ -14,14 +14,16 @@ namespace ScanerService
         private readonly IFileService _fileService;
         private readonly string _successFolder;
         private readonly string _errorFolder;
+        private readonly string _processingFolder;
         private readonly string _fileNamePattern;
 
-        public FileProcessor(string successFolder, string errorFolder, string fileNamePattern)
+        public FileProcessor(string successFolder, string errorFolder, string processingFolder, string fileNamePattern)
         {
             _directoryService = new DirectoryService();
             _fileService = new PdfFileService(successFolder);
             _successFolder = successFolder;
             _errorFolder = errorFolder;
+            _processingFolder = processingFolder;
             _fileNamePattern = fileNamePattern;
         }
 
@@ -55,7 +57,7 @@ namespace ScanerService
             if (CheckImageName(filePath))
             {
                 _fileService.AddPage(filePath);
-                _directoryService.MoveFile(filePath, _successFolder);
+                _directoryService.MoveFile(filePath, _processingFolder);
             }
             else
             {
@@ -71,6 +73,12 @@ namespace ScanerService
             if (rule.IsMatch(filePath))
             {
                 _fileService.SaveDocument();
+
+                foreach (var file in Directory.EnumerateFiles(_processingFolder))
+                {
+                    _directoryService.MoveFile(file, _successFolder);
+                }
+
                 return true;
             }
 

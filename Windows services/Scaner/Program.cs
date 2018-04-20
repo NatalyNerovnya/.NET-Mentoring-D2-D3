@@ -13,6 +13,7 @@ namespace Scaner
             var config = new Configuration(ConfigurationManager.AppSettings["Folders"]
                 , ConfigurationManager.AppSettings["SuccessFolder"]
                 , ConfigurationManager.AppSettings["ErrorFolder"]
+                , ConfigurationManager.AppSettings["ProcessingFolder"]
                 , ConfigurationManager.AppSettings["FileNamePattern"]
                 , int.Parse(ConfigurationManager.AppSettings["TimerTime"])
                 , ConfigurationManager.AppSettings["CodeString"]);

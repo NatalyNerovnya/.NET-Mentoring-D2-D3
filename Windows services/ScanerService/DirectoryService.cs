@@ -57,7 +57,7 @@ namespace ScanerService
 
         private bool TryOpen(string fileName, int tryCount)
         {
-            for (int i = 0; i < tryCount; i++)
+            for (var i = 0; i < tryCount; i++)
             {
                 try
                 {

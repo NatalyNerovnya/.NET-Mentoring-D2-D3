@@ -22,7 +22,7 @@ namespace ScanerService
             _configuration = config;
 
             _directoryService = new DirectoryService();
-            _fileProcessor = new FileProcessor(_configuration.SuccessFolder, _configuration.ErrorFolder, _configuration.FileNamePattern);
+            _fileProcessor = new FileProcessor(_configuration.SuccessFolder, _configuration.ErrorFolder, _configuration.ProcessingFolder, _configuration.FileNamePattern);
             _rules = new List<IInteruptRule>
             {
                 new TimerRule(_configuration.TimerValue),
@@ -37,6 +37,7 @@ namespace ScanerService
 
             _directoryService.CreateDirectory(_configuration.SuccessFolder);
             _directoryService.CreateDirectory(_configuration.ErrorFolder);
+            _directoryService.CreateDirectory(_configuration.ProcessingFolder);
             _directoryService.CreateDirectory(path);
 
             _fileProcessor.ProcessWaitingFiles(path, _rules.Where(r => r.GetType() != typeof(TimerRule)).ToList());
