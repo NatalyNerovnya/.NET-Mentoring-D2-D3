@@ -10,9 +10,10 @@ namespace ScanerService
     {
         private readonly string _successFolder;
         private PdfDocument _document;
+        private byte[] _documentBytes;
         private int _counter;
         private bool _isFileCreated;
-        private AzureQueueClient queueClient;
+        private readonly AzureQueueClient _queueClient;
 
         public PdfFileService(string successFolder)
         {
@@ -20,7 +21,7 @@ namespace ScanerService
             _successFolder = successFolder;
             _counter = 1;
 
-            queueClient = new AzureQueueClient();
+            _queueClient = new AzureQueueClient();
         }
         
         public void AddPage(string filePath)
@@ -43,9 +44,16 @@ namespace ScanerService
         {
             if (!_isFileCreated) return;
 
-            queueClient.SendMessage();
+            byte[] fileContents = null;
+            using (MemoryStream stream = new MemoryStream())
+            {
+                _document.Save(stream, true);
+                fileContents = stream.ToArray();
+            }
+            
+            _queueClient.SendBytes(fileContents);
 
-            _document.Save(Path.Combine(_successFolder, $"scan_{_counter++}.pdf"));
+            //_document.Save(Path.Combine(_successFolder, $"scan_{_counter++}.pdf"));
             _document.Close();
 
             _isFileCreated = false;

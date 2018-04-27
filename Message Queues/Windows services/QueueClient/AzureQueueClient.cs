@@ -1,13 +1,10 @@
 ﻿namespace QueueClient
 {
-    //using Microsoft.Azure.NotificationHubs;
-    //using Microsoft.Azure.ServiceBus;
     using Microsoft.ServiceBus;
     using Microsoft.ServiceBus.Messaging;
     public class AzureQueueClient
     {
-        //const string ServiceBusConnectionString = "Endpoint=sb://net-mentoring.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=O1O323CxZpkhx7SYesuje0N7UG5onEaHeyUcgbVOJpY=";
-        private string queueName = "FileQueue";
+        private string pdfMessageQueueName = "FileQueue";
         private QueueClient queueClient;
         private NamespaceManager namespaceManager;
 
@@ -17,26 +14,24 @@
             CreateQueue();
         }
 
-        public void SendMessage()
+        public void SendBytes(byte[] data)
         {
-            var message = new BrokeredMessage("some message");
-
-            // Submit the order.
+            var message = new BrokeredMessage(data);
             queueClient.Send(message);
         }
 
         private void CreateQueue()
         {
-            if (!namespaceManager.QueueExists(queueName))
+            if (!namespaceManager.QueueExists(pdfMessageQueueName))
             {
-                namespaceManager.CreateQueue(queueName);
+                namespaceManager.CreateQueue(pdfMessageQueueName);
             }
 
             var messagingFactory = MessagingFactory.Create(
                 namespaceManager.Address,
                 namespaceManager.Settings.TokenProvider);
 
-            queueClient = messagingFactory.CreateQueueClient(queueName);
+            queueClient = messagingFactory.CreateQueueClient(pdfMessageQueueName);
         }
     }
 }
