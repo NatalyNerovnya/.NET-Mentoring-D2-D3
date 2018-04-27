@@ -3,46 +3,50 @@
     using DocumentService;
     using Microsoft.ServiceBus;
     using Microsoft.ServiceBus.Messaging;
+    using System;
     using System.IO;
     using Topshelf;
 
     public class AzureQueueClient : ServiceControl
     {
         private string pdfMessageQueueName = "FileQueue";
-        private QueueClient queueClient;
+        private string statusQueueName = "StatusQueue";
+        private QueueClient pdfQueueClient;
+        private QueueClient statusQueueClient;
         private NamespaceManager namespaceManager;
         private PdfService pdfService;
+        private XmlService xmlService;
 
         public AzureQueueClient()
         {
             pdfService = new PdfService();
-            namespaceManager = NamespaceManager.Create();
-            CreateQueue();
-        }
+            xmlService = new XmlService();
 
-        public void SendBytes(byte[] data)
-        {
-            var message = new BrokeredMessage(data);
-            queueClient.Send(message);
+            namespaceManager = NamespaceManager.Create();
+
+            pdfQueueClient = CreateQueue(pdfMessageQueueName);
+            statusQueueClient = CreateQueue(statusQueueName);
         }
 
         public bool Start(HostControl hostControl)
         {
-            ListenQueue();
+            ListenQueue(pdfQueueClient, ProcessMessage);
+            ListenQueue(statusQueueClient, ProcessStatus);
 
             return true;
         }
 
         public bool Stop(HostControl hostControl)
         {
-            queueClient.Close();
+            pdfQueueClient.Close();
+            statusQueueClient.Close();
 
             return true;
         }
 
-        private void ListenQueue()
+        private void ListenQueue(QueueClient client, Action<BrokeredMessage> action)
         {
-            queueClient.OnMessage(ProcessMessage);
+            client.OnMessage(action);
         }
 
         private void ProcessMessage(BrokeredMessage message)
@@ -50,18 +54,23 @@
             pdfService.SaveDocument(message.GetBody<Stream>());
         }
 
-        private void CreateQueue()
+        private void ProcessStatus(BrokeredMessage message)
         {
-            if (!namespaceManager.QueueExists(pdfMessageQueueName))
+            xmlService.SaveDocument(message.GetBody<Stream>());
+        }
+
+        private QueueClient CreateQueue(string queueName)
+        {
+            if (!namespaceManager.QueueExists(queueName))
             {
-                namespaceManager.CreateQueue(pdfMessageQueueName);
+                namespaceManager.CreateQueue(queueName);
             }
 
             var messagingFactory = MessagingFactory.Create(
                 namespaceManager.Address,
                 namespaceManager.Settings.TokenProvider);
 
-            queueClient = messagingFactory.CreateQueueClient(pdfMessageQueueName);
+            return messagingFactory.CreateQueueClient(queueName);
         }
     }
 }

@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="PdfService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="XmlService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
