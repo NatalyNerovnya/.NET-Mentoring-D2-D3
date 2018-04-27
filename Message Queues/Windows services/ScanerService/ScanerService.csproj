@@ -87,6 +87,8 @@
     <Compile Include="Rules\NameRule.cs" />
     <Compile Include="Rules\TimerRule.cs" />
     <Compile Include="ScanProcessService.cs" />
+    <Compile Include="Status\ServiceStatus.cs" />
+    <Compile Include="Status\StatusService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Configuration;
+﻿using System.Configuration;
 using ScanerService;
 using Topshelf;
 using Configuration = ScanerService.Helpers.Configuration;
@@ -16,7 +15,8 @@ namespace Scaner
                 , ConfigurationManager.AppSettings["ProcessingFolder"]
                 , ConfigurationManager.AppSettings["FileNamePattern"]
                 , int.Parse(ConfigurationManager.AppSettings["TimerTime"])
-                , ConfigurationManager.AppSettings["CodeString"]);
+                , ConfigurationManager.AppSettings["CodeString"]
+                , int.Parse(ConfigurationManager.AppSettings["StatusTimerTime"]));
 
             HostFactory.Run(x =>
             {

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using ScanerService.Interfaces;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using ScanerService.Interafces;
+using QueueClient;
 
 namespace ScanerService
 {
@@ -17,10 +17,10 @@ namespace ScanerService
         private readonly string _processingFolder;
         private readonly string _fileNamePattern;
 
-        public FileProcessor(string successFolder, string errorFolder, string processingFolder, string fileNamePattern)
+        public FileProcessor(string successFolder, string errorFolder, string processingFolder, string fileNamePattern, AzureQueueClient client)
         {
             _directoryService = new DirectoryService();
-            _fileService = new PdfFileService(successFolder);
+            _fileService = new PdfFileService(successFolder, client);
             _successFolder = successFolder;
             _errorFolder = errorFolder;
             _processingFolder = processingFolder;

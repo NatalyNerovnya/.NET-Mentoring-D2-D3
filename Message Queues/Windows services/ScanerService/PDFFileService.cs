@@ -14,13 +14,13 @@ namespace ScanerService
         private bool _isFileCreated;
         private readonly AzureQueueClient _queueClient;
 
-        public PdfFileService(string successFolder)
+        public PdfFileService(string successFolder, AzureQueueClient client)
         {
             _isFileCreated = false;
             _successFolder = successFolder;
             _counter = 1;
 
-            _queueClient = new AzureQueueClient();
+            _queueClient = client;
         }
         
         public void AddPage(string filePath)
@@ -50,7 +50,7 @@ namespace ScanerService
                 fileContents = stream.ToArray();
             }
             
-            _queueClient.SendBytes(fileContents);
+            _queueClient.SendFileBytes(fileContents);
 
             _document.Close();
 

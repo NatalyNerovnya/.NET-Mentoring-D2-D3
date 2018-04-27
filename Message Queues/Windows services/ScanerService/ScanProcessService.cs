@@ -6,6 +6,9 @@ using System.Linq;
 using ScanerService.Rules;
 using Topshelf;
 using Configuration = ScanerService.Helpers.Configuration;
+using ScanerService.Status;
+using System.Timers;
+using QueueClient;
 
 namespace ScanerService
 {
@@ -16,19 +19,32 @@ namespace ScanerService
         private readonly IDirectoryService _directoryService;
         private readonly IFileProcessor _fileProcessor;
         private readonly List<IInteruptRule> _rules;
+        private readonly StatusService statusService;
+        private readonly Timer statusTimer;
 
         public ScanProcessService(Configuration config)
         {
+            var queueClient = new AzureQueueClient();
+            statusService = new StatusService(config.BarcodeString, config.TimerValue, CurerntState.WatingFiles, queueClient);
+
             _configuration = config;
 
             _directoryService = new DirectoryService();
-            _fileProcessor = new FileProcessor(_configuration.SuccessFolder, _configuration.ErrorFolder, _configuration.ProcessingFolder, _configuration.FileNamePattern);
+            _fileProcessor = new FileProcessor(_configuration.SuccessFolder, _configuration.ErrorFolder, _configuration.ProcessingFolder, _configuration.FileNamePattern, queueClient);
             _rules = new List<IInteruptRule>
             {
                 new TimerRule(_configuration.TimerValue),
                 new BarcodeRule(_configuration.BarcodeString),
                 new NameRule(_configuration.FileNamePattern)
             };
+
+            statusTimer = new Timer(config.StatusTimerTime);
+            statusTimer.Elapsed += StatusTimer_Elapsed;
+        }
+
+        private void StatusTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            statusService.SendStatus();
         }
 
         public bool Start(HostControl hostControl)
@@ -40,6 +56,8 @@ namespace ScanerService
             _directoryService.CreateDirectory(_configuration.ProcessingFolder);
             _directoryService.CreateDirectory(path);
 
+            statusTimer.Start();
+
             _fileProcessor.ProcessWaitingFiles(path, _rules.Where(r => r.GetType() != typeof(TimerRule)).ToList());
             
             InitializeWatcher(path);
@@ -50,7 +68,8 @@ namespace ScanerService
         public bool Stop(HostControl hostControl)
         {
             _watcher.EnableRaisingEvents = false;
-            
+            statusTimer.Stop();
+
             return true;
         }
 
@@ -67,11 +86,15 @@ namespace ScanerService
 
         private void HandleFile(object sender, FileSystemEventArgs args)
         {
+            statusService.ServiceStatus.Status = CurerntState.ProcessFiles;
+
             var filePath = args.FullPath;
             if (_directoryService.TryOpen(filePath, 3))
             {
                 _fileProcessor.ProcessFiles(filePath, _rules);
             }
+
+            statusService.ServiceStatus.Status = CurerntState.WatingFiles;
         }
     }
 }
