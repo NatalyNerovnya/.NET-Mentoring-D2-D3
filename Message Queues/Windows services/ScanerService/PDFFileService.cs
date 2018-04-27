@@ -10,7 +10,6 @@ namespace ScanerService
     {
         private readonly string _successFolder;
         private PdfDocument _document;
-        private byte[] _documentBytes;
         private int _counter;
         private bool _isFileCreated;
         private readonly AzureQueueClient _queueClient;
@@ -53,7 +52,6 @@ namespace ScanerService
             
             _queueClient.SendBytes(fileContents);
 
-            //_document.Save(Path.Combine(_successFolder, $"scan_{_counter++}.pdf"));
             _document.Close();
 
             _isFileCreated = false;
