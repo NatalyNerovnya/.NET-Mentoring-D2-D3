@@ -8,8 +8,7 @@
         {
             HostFactory.Run(x =>
             {
-                x.Service<AzureQueueClient>();
-
+                x.Service<AzureServiceBusClient>();
                 x.SetServiceName("CentralService");
                 x.SetDisplayName("Central Service");
                 x.StartAutomaticallyDelayed();

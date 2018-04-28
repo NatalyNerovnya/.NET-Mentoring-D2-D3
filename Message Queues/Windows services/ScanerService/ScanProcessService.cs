@@ -9,6 +9,7 @@ using Configuration = ScanerService.Helpers.Configuration;
 using ScanerService.Status;
 using System.Timers;
 using QueueClient;
+using ScanerService.ServiceBus;
 
 namespace ScanerService
 {
@@ -21,11 +22,13 @@ namespace ScanerService
         private readonly List<IInteruptRule> _rules;
         private readonly StatusService statusService;
         private readonly Timer statusTimer;
+        private AzureSubscriptionClient subscriptionClient;
 
         public ScanProcessService(Configuration config)
         {
             var queueClient = new AzureQueueClient();
             statusService = new StatusService(config.BarcodeString, config.TimerValue, CurerntState.WatingFiles, queueClient);
+            subscriptionClient = new AzureSubscriptionClient(statusService);
 
             _configuration = config;
 

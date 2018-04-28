@@ -5,9 +5,8 @@
     using Microsoft.ServiceBus.Messaging;
     using System;
     using System.IO;
-    using Topshelf;
 
-    public class AzureQueueClient : ServiceControl
+    public class AzureQueueClient
     {
         private string pdfMessageQueueName = "FileQueue";
         private string statusQueueName = "StatusQueue";
@@ -28,20 +27,16 @@
             statusQueueClient = CreateQueue(statusQueueName);
         }
 
-        public bool Start(HostControl hostControl)
+        public void OnStart()
         {
             ListenQueue(pdfQueueClient, ProcessMessage);
             ListenQueue(statusQueueClient, ProcessStatus);
-
-            return true;
         }
 
-        public bool Stop(HostControl hostControl)
+        public void OnStop()
         {
             pdfQueueClient.Close();
             statusQueueClient.Close();
-
-            return true;
         }
 
         private void ListenQueue(QueueClient client, Action<BrokeredMessage> action)

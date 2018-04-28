@@ -6,7 +6,6 @@ namespace DocumentService
     public class XmlService
     {
         private readonly string folder = @"C:\Temp\Status";
-        private int _counter;
 
         public XmlService()
         {
@@ -14,8 +13,6 @@ namespace DocumentService
             {
                 Directory.CreateDirectory(folder);
             }
-
-            _counter = 1;
         }
 
         public void SaveDocument(Stream messageBody)
