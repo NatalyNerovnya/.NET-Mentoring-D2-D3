@@ -5,7 +5,6 @@
     using Microsoft.ServiceBus.Messaging;
     using System;
     using System.IO;
-
     public class AzureQueueClient
     {
         private string pdfMessageQueueName = "FileQueue";
@@ -15,6 +14,10 @@
         private NamespaceManager namespaceManager;
         private PdfService pdfService;
         private XmlService xmlService;
+        private MemoryStream largeMessageStream;
+        private long currentMessageNumber;
+
+
 
         public AzureQueueClient()
         {
@@ -25,6 +28,8 @@
 
             pdfQueueClient = CreateQueue(pdfMessageQueueName);
             statusQueueClient = CreateQueue(statusQueueName);
+
+            largeMessageStream = new MemoryStream();
         }
 
         public void OnStart()
@@ -46,7 +51,14 @@
 
         private void ProcessMessage(BrokeredMessage message)
         {
-            pdfService.SaveDocument(message.GetBody<Stream>());
+            if (message.Properties.ContainsKey("NumberOfSubMessages"))
+            {
+                ProcessBatchPart(message);
+            }
+            else
+            {
+                pdfService.SaveDocument(message.GetBody<Stream>());
+            }
         }
 
         private void ProcessStatus(BrokeredMessage message)
@@ -54,10 +66,30 @@
             xmlService.SaveDocument(message.GetBody<Stream>());
         }
 
+        private void ProcessBatchPart(BrokeredMessage message)
+        {
+            var subMessageStream = message.GetBody<Stream>();
+
+            subMessageStream.CopyTo(largeMessageStream);
+            message.Complete();
+
+            currentMessageNumber = (int)message.Properties["SubMessageNumber"];
+
+            if (currentMessageNumber == (int)message.Properties["NumberOfSubMessages"])
+            {
+                pdfService.SaveDocument(largeMessageStream);
+                largeMessageStream = new MemoryStream();
+                currentMessageNumber = 0;
+            }
+        }
+        
         private QueueClient CreateQueue(string queueName)
         {
             if (!namespaceManager.QueueExists(queueName))
             {
+                var q = new QueueDescription(queueName);
+                q.EnablePartitioning = true;
+                q.EnableBatchedOperations = true;
                 namespaceManager.CreateQueue(queueName);
             }
 
