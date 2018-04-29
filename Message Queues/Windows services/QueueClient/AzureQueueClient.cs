@@ -2,6 +2,8 @@
 {
     using Microsoft.ServiceBus;
     using Microsoft.ServiceBus.Messaging;
+    using System;
+    using System.IO;
     public class AzureQueueClient
     {
         private string pdfMessageQueueName = "FileQueue";
@@ -9,6 +11,8 @@
         private QueueClient fileQueueClient;
         private QueueClient statusQueueClient;
         private NamespaceManager namespaceManager;
+        private int SubMessageBodySize = 192000;
+        private int MaxMessageSize = 256000;
 
         public AzureQueueClient()
         {
@@ -20,7 +24,10 @@
 
         public void SendFileBytes(byte[] byteArray)
         {
-            SendBytes(fileQueueClient, byteArray);
+            if (byteArray.Length > MaxMessageSize)
+                SplitAndSend(new BrokeredMessage(byteArray));
+            else
+             SendBytes(fileQueueClient, byteArray);
         }
 
         public void SendStatusBytes(byte[] byteArray)
@@ -34,11 +41,48 @@
             client.Send(message);
         }
 
+        private void SplitAndSend(BrokeredMessage message)
+        {
+            var messageBodySize = message.Size;
+            var numberOfSubMessages = (int)(messageBodySize / SubMessageBodySize);
+
+            if (messageBodySize % SubMessageBodySize != 0)
+            {
+                numberOfSubMessages++;
+            }
+            
+            var sessionId = Guid.NewGuid().ToString();            
+            var subMessageNumber = 1;
+
+            Stream bodyStream = message.GetBody<Stream>();
+
+            for (int streamOffest = 0; streamOffest < messageBodySize; streamOffest += SubMessageBodySize)
+            {
+                var arraySize = (messageBodySize - streamOffest) > SubMessageBodySize ? SubMessageBodySize : messageBodySize - streamOffest;                
+                var subMessageBytes = new byte[arraySize];
+                var result = bodyStream.Read(subMessageBytes, 0, (int)arraySize);
+
+                var subMessage = new BrokeredMessage(new MemoryStream(subMessageBytes), true)
+                {
+                    SessionId = sessionId
+                };
+
+                subMessage.Properties.Add("NumberOfSubMessages", numberOfSubMessages);
+                subMessage.Properties.Add("SubMessageNumber", subMessageNumber);
+               
+                fileQueueClient.Send(subMessage);
+                subMessageNumber++;
+            }
+        }
+
         private QueueClient CreateQueueClient(string queueName)
         {
             if (!namespaceManager.QueueExists(queueName))
             {
-                namespaceManager.CreateQueue(queueName);
+                var q = new QueueDescription(queueName);
+                q.EnablePartitioning = true;
+                q.EnableBatchedOperations = true;
+                namespaceManager.CreateQueue(q);
             }
 
             var messagingFactory = MessagingFactory.Create(
