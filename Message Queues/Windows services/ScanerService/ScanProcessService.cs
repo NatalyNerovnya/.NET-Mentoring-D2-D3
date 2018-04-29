@@ -7,7 +7,6 @@ using ScanerService.Rules;
 using Topshelf;
 using Configuration = ScanerService.Helpers.Configuration;
 using ScanerService.Status;
-using System.Timers;
 using QueueClient;
 using ScanerService.ServiceBus;
 
@@ -21,13 +20,12 @@ namespace ScanerService
         private readonly IFileProcessor _fileProcessor;
         private readonly List<IInteruptRule> _rules;
         private readonly StatusService statusService;
-        private readonly Timer statusTimer;
         private AzureSubscriptionClient subscriptionClient;
 
         public ScanProcessService(Configuration config)
         {
             var queueClient = new AzureQueueClient();
-            statusService = new StatusService(config.BarcodeString, config.TimerValue, CurerntState.WatingFiles, queueClient);
+            statusService = new StatusService(config.BarcodeString, config.StatusTimerTime, CurerntState.WatingFiles, queueClient);
             subscriptionClient = new AzureSubscriptionClient(statusService);
 
             _configuration = config;
@@ -40,14 +38,7 @@ namespace ScanerService
                 new BarcodeRule(_configuration.BarcodeString),
                 new NameRule(_configuration.FileNamePattern)
             };
-
-            statusTimer = new Timer(config.StatusTimerTime);
-            statusTimer.Elapsed += StatusTimer_Elapsed;
-        }
-
-        private void StatusTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            statusService.SendStatus();
+            
         }
 
         public bool Start(HostControl hostControl)
@@ -59,7 +50,7 @@ namespace ScanerService
             _directoryService.CreateDirectory(_configuration.ProcessingFolder);
             _directoryService.CreateDirectory(path);
 
-            statusTimer.Start();
+            statusService.OnStart();
 
             _fileProcessor.ProcessWaitingFiles(path, _rules.Where(r => r.GetType() != typeof(TimerRule)).ToList());
             
@@ -71,7 +62,7 @@ namespace ScanerService
         public bool Stop(HostControl hostControl)
         {
             _watcher.EnableRaisingEvents = false;
-            statusTimer.Stop();
+            statusService.OnStop();
 
             return true;
         }

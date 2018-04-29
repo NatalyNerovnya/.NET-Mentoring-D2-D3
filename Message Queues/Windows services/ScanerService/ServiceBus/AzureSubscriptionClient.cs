@@ -1,6 +1,8 @@
 ﻿using Microsoft.ServiceBus;
 using Microsoft.ServiceBus.Messaging;
 using ScanerService.Status;
+using System.IO;
+using System.Xml.Serialization;
 
 namespace ScanerService.ServiceBus
 {
@@ -22,12 +24,26 @@ namespace ScanerService.ServiceBus
 
         private void ProcessMessage(BrokeredMessage message)
         {
-            var body = message.GetBody<string>();
 
-            if (string.IsNullOrEmpty(body))
+            if (message.ContentType == "StatusConfiguration")
             {
-                statusService.SendStatus();
+                var statusStream = message.GetBody<Stream>();
+                var serializer = new XmlSerializer(typeof(ServiceStatus));
+                var status = (ServiceStatus)serializer.Deserialize(statusStream);
+
+                statusService.UpdateTimer(status.PageTimeout);
+                statusService.ServiceStatus.BarcodeString = status.BarcodeString;
             }
+            else
+            {
+                var body = message.GetBody<string>();
+
+                if (string.IsNullOrEmpty(body))
+                {
+                    statusService.SendStatus();
+                }
+            }
+
         }
 
         private void CreateSubscription()

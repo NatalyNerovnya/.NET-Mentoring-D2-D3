@@ -2,7 +2,7 @@
 
 namespace ScanerService.Status
 {
-    [Serializable]
+    [Serializable()]
     public class ServiceStatus
     {
         public int PageTimeout { get; set; }
@@ -11,7 +11,7 @@ namespace ScanerService.Status
 
     }
 
-    [Serializable]
+    [Serializable()]
     public enum CurerntState
     {
         WatingFiles = 1,

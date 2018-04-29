@@ -7,7 +7,7 @@ namespace QueueClient
     public class AzureTopicClient
     {
         private string topicName = "CentralTopic";
-        private static readonly int timerValue = 10000;
+        private static readonly int timerValue = 70000;
         private TopicClient topicClient;
         private NamespaceManager namespaceManager;
         private Timer timer;
@@ -19,6 +19,11 @@ namespace QueueClient
             namespaceManager = NamespaceManager.Create();
 
             topicClient = CreateTopic(topicName);
+        }
+
+        public void Send(BrokeredMessage message)
+        {
+            topicClient.Send(message);
         }
 
         public void OnStart()
