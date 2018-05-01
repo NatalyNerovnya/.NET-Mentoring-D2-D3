@@ -25,7 +25,7 @@ namespace ScanerService.ServiceBus
         private void ProcessMessage(BrokeredMessage message)
         {
 
-            if (message.ContentType == "StatusConfiguration")
+            if (message.Properties.ContainsKey("StatusConfiguration"))
             {
                 var statusStream = message.GetBody<Stream>();
                 var serializer = new XmlSerializer(typeof(ServiceStatus));

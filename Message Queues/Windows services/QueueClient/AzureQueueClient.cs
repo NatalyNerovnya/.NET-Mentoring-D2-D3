@@ -11,8 +11,7 @@
         private QueueClient fileQueueClient;
         private QueueClient statusQueueClient;
         private NamespaceManager namespaceManager;
-        private int SubMessageBodySize = 192000;
-        private int MaxMessageSize = 256000;
+        private int MaxMessageSize = 192000;
 
         public AzureQueueClient()
         {
@@ -44,9 +43,9 @@
         private void SplitAndSend(BrokeredMessage message)
         {
             var messageBodySize = message.Size;
-            var numberOfSubMessages = (int)(messageBodySize / SubMessageBodySize);
+            var numberOfSubMessages = (int)(messageBodySize / MaxMessageSize);
 
-            if (messageBodySize % SubMessageBodySize != 0)
+            if (messageBodySize % MaxMessageSize != 0)
             {
                 numberOfSubMessages++;
             }
@@ -56,9 +55,9 @@
 
             Stream bodyStream = message.GetBody<Stream>();
 
-            for (int streamOffest = 0; streamOffest < messageBodySize; streamOffest += SubMessageBodySize)
+            for (int streamOffest = 0; streamOffest < messageBodySize; streamOffest += MaxMessageSize)
             {
-                var arraySize = (messageBodySize - streamOffest) > SubMessageBodySize ? SubMessageBodySize : messageBodySize - streamOffest;                
+                var arraySize = (messageBodySize - streamOffest) > MaxMessageSize ? MaxMessageSize : messageBodySize - streamOffest;                
                 var subMessageBytes = new byte[arraySize];
                 var result = bodyStream.Read(subMessageBytes, 0, (int)arraySize);
 

@@ -57,7 +57,10 @@ namespace QueueClient
 
             using (var fileStream = new FileStream(path, FileMode.Open))
             {
-                azureTopicClient.Send(new Microsoft.ServiceBus.Messaging.BrokeredMessage(fileStream) { ContentType = "StatusConfiguration" });
+                var message = new Microsoft.ServiceBus.Messaging.BrokeredMessage(fileStream);
+                message.Properties.Add("StatusConfiguration", true);
+
+                azureTopicClient.Send(message);
             }
         }
     }
