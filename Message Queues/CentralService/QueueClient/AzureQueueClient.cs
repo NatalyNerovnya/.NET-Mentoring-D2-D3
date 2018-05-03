@@ -63,7 +63,7 @@
 
         private void ProcessStatus(BrokeredMessage message)
         {
-            xmlService.SaveDocument(message.GetBody<Stream>());
+            xmlService.SaveDocument(new MemoryStream(message.GetBody<byte[]>()));
         }
 
         private void ProcessBatchPart(BrokeredMessage message)
