@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchemaValidator", "SchemaValidator\SchemaValidator.csproj", "{AB3CF7FE-63BA-437E-A7F6-57021A3D412B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonInterfaces", "CommonInterfaces\CommonInterfaces.csproj", "{D90CE4DB-4911-4041-89A3-E90F632D1960}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookValidationTool", "BookValidationTool\BookValidationTool.csproj", "{6AB35E14-42D8-4D23-890B-89EF2E9999C1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AB3CF7FE-63BA-437E-A7F6-57021A3D412B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB3CF7FE-63BA-437E-A7F6-57021A3D412B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB3CF7FE-63BA-437E-A7F6-57021A3D412B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB3CF7FE-63BA-437E-A7F6-57021A3D412B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D90CE4DB-4911-4041-89A3-E90F632D1960}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D90CE4DB-4911-4041-89A3-E90F632D1960}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D90CE4DB-4911-4041-89A3-E90F632D1960}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D90CE4DB-4911-4041-89A3-E90F632D1960}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AB35E14-42D8-4D23-890B-89EF2E9999C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AB35E14-42D8-4D23-890B-89EF2E9999C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AB35E14-42D8-4D23-890B-89EF2E9999C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AB35E14-42D8-4D23-890B-89EF2E9999C1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
