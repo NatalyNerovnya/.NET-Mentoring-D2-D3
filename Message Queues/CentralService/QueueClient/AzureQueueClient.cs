@@ -14,7 +14,7 @@
         private NamespaceManager namespaceManager;
         private PdfService pdfService;
         private XmlService xmlService;
-        private MemoryStream largeMessageStream;
+        //private MemoryStream largeMessageStream;
         private long currentMessageNumber;
 
 
@@ -29,13 +29,59 @@
             pdfQueueClient = CreateQueue(pdfMessageQueueName);
             statusQueueClient = CreateQueue(statusQueueName);
 
-            largeMessageStream = new MemoryStream();
+            //largeMessageStream = new MemoryStream();
+        }
+
+
+        public MemoryStream Receive()
+        {
+            var largeMessageStream = new MemoryStream();
+            var session = pdfQueueClient.AcceptMessageSession();
+            var numberOfSubMessages = -1;
+            var numberOfSubMessagesReceived = 0;
+
+            while (true)
+            {
+                var subMessage = session.Receive();
+
+                if (subMessage != null)
+                {
+                    if (numberOfSubMessages == -1)
+                    {
+                        numberOfSubMessages = (int)subMessage.Properties["NumberOfSubMessages"];
+                    }
+
+                    var subMessageStream = subMessage.GetBody<Stream>();
+
+                    subMessageStream.CopyTo(largeMessageStream);
+                    subMessage.Complete();
+                    
+                    numberOfSubMessagesReceived++;
+
+                    if (numberOfSubMessagesReceived == numberOfSubMessages)
+                    {
+                        break;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+            var l = largeMessageStream.ToArray();
+            return largeMessageStream;
         }
 
         public void OnStart()
         {
-            ListenQueue(pdfQueueClient, ProcessMessage);
+            //ListenQueue(pdfQueueClient, ProcessMessage);
             ListenQueue(statusQueueClient, ProcessStatus);
+
+            while (true)
+            {
+                var stream = Receive();
+               pdfService.SaveDocument(stream);
+            }
         }
 
         public void OnStop()
@@ -63,24 +109,24 @@
 
         private void ProcessStatus(BrokeredMessage message)
         {
-            xmlService.SaveDocument(message.GetBody<Stream>());
+            xmlService.SaveDocument(new MemoryStream(message.GetBody<byte[]>()));
         }
 
         private void ProcessBatchPart(BrokeredMessage message)
         {
-            var subMessageStream = message.GetBody<Stream>();
+            //var subMessageStream = message.GetBody<Stream>();
 
-            subMessageStream.CopyTo(largeMessageStream);
-            message.Complete();
+            //subMessageStream.CopyTo(largeMessageStream);
+            //message.Complete();
 
-            currentMessageNumber = (int)message.Properties["SubMessageNumber"];
+            //currentMessageNumber = (int)message.Properties["SubMessageNumber"];
 
-            if (currentMessageNumber == (int)message.Properties["NumberOfSubMessages"])
-            {
-                pdfService.SaveDocument(largeMessageStream);
-                largeMessageStream = new MemoryStream();
-                currentMessageNumber = 0;
-            }
+            //if (currentMessageNumber == (int)message.Properties["NumberOfSubMessages"])
+            //{
+            //    pdfService.SaveDocument(largeMessageStream);
+            //    largeMessageStream = new MemoryStream();
+            //    currentMessageNumber = 0;
+            //}
         }
         
         private QueueClient CreateQueue(string queueName)
@@ -88,8 +134,7 @@
             if (!namespaceManager.QueueExists(queueName))
             {
                 var q = new QueueDescription(queueName);
-                q.EnablePartitioning = true;
-                q.EnableBatchedOperations = true;
+                q.RequiresSession = true;
                 namespaceManager.CreateQueue(queueName);
             }
 

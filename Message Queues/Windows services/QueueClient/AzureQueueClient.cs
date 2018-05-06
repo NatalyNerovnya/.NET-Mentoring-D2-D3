@@ -24,7 +24,7 @@
         public void SendFileBytes(byte[] byteArray)
         {
             if (byteArray.Length > MaxMessageSize)
-                SplitAndSend(new BrokeredMessage(byteArray));
+                SplitAndSend(byteArray);
             else
              SendBytes(fileQueueClient, byteArray);
         }
@@ -40,9 +40,9 @@
             client.Send(message);
         }
 
-        private void SplitAndSend(BrokeredMessage message)
+        private void SplitAndSend(byte[] messageBytes)
         {
-            var messageBodySize = message.Size;
+            var messageBodySize = messageBytes.Length;
             var numberOfSubMessages = (int)(messageBodySize / MaxMessageSize);
 
             if (messageBodySize % MaxMessageSize != 0)
@@ -53,13 +53,16 @@
             var sessionId = Guid.NewGuid().ToString();            
             var subMessageNumber = 1;
 
-            Stream bodyStream = message.GetBody<Stream>();
+            //Stream bodyStream = message.GetBody<Stream>();
 
             for (int streamOffest = 0; streamOffest < messageBodySize; streamOffest += MaxMessageSize)
             {
                 var arraySize = (messageBodySize - streamOffest) > MaxMessageSize ? MaxMessageSize : messageBodySize - streamOffest;                
                 var subMessageBytes = new byte[arraySize];
-                var result = bodyStream.Read(subMessageBytes, 0, (int)arraySize);
+                
+                //var result = bodyStream.Read(subMessageBytes, 0, (int)arraySize);
+
+                Buffer.BlockCopy(messageBytes, streamOffest, subMessageBytes, 0, arraySize);
 
                 var subMessage = new BrokeredMessage(new MemoryStream(subMessageBytes), true)
                 {
@@ -79,8 +82,7 @@
             if (!namespaceManager.QueueExists(queueName))
             {
                 var q = new QueueDescription(queueName);
-                q.EnablePartitioning = true;
-                q.EnableBatchedOperations = true;
+                q.RequiresSession = true;
                 namespaceManager.CreateQueue(q);
             }
 
