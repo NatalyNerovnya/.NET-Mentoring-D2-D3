@@ -17,8 +17,8 @@
         {
             namespaceManager = NamespaceManager.Create();
 
-            fileQueueClient = CreateQueueClient(pdfMessageQueueName);
-            statusQueueClient = CreateQueueClient(statusMessageQueueName);
+            fileQueueClient = CreateQueueClient(pdfMessageQueueName, true);
+            statusQueueClient = CreateQueueClient(statusMessageQueueName, false);
         }
 
         public void SendFileBytes(byte[] byteArray)
@@ -53,15 +53,11 @@
             var sessionId = Guid.NewGuid().ToString();            
             var subMessageNumber = 1;
 
-            //Stream bodyStream = message.GetBody<Stream>();
-
             for (int streamOffest = 0; streamOffest < messageBodySize; streamOffest += MaxMessageSize)
             {
                 var arraySize = (messageBodySize - streamOffest) > MaxMessageSize ? MaxMessageSize : messageBodySize - streamOffest;                
                 var subMessageBytes = new byte[arraySize];
                 
-                //var result = bodyStream.Read(subMessageBytes, 0, (int)arraySize);
-
                 Buffer.BlockCopy(messageBytes, streamOffest, subMessageBytes, 0, arraySize);
 
                 var subMessage = new BrokeredMessage(new MemoryStream(subMessageBytes), true)
@@ -77,12 +73,13 @@
             }
         }
 
-        private QueueClient CreateQueueClient(string queueName)
+        private QueueClient CreateQueueClient(string queueName, bool requireSession)
         {
             if (!namespaceManager.QueueExists(queueName))
             {
                 var q = new QueueDescription(queueName);
-                q.RequiresSession = true;
+                q.RequiresSession = requireSession;
+                q.EnablePartitioning = requireSession;
                 namespaceManager.CreateQueue(q);
             }
 
