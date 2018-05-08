@@ -18,9 +18,11 @@ namespace RSSGeneratorTool
                 filePath = Console.ReadLine();
             } while (!File.Exists(filePath));
 
-            generator.Generate(filePath);
+            generator.GenerateRss(filePath);
+            generator.GenerateHtml(filePath);
 
-            Console.WriteLine("Created result.xml is located in C:/temp");
+            Console.WriteLine("Created result.xml and result.html are located in C:/temp");
+            Console.ReadLine();
         }
     }
 }

@@ -1,20 +1,30 @@
-﻿using System;
-using System.Xml.Xsl;
+﻿using System.Xml.Xsl;
 
 namespace RSSGenerator
 {
     public class Generator
     {
-        public void Generate(string xmlPath)
+        private string resultFolder = @"C:\temp";
+        public void GenerateRss(string xmlPath)
         {
-            var xsltPath = "../../../RSSGenerator/XmlToRss.xslt";
-            var resultPath = @"C:\temp";
+            var resultFullPath = $"{resultFolder}/result.xml";
 
+            Generate(xmlPath, resultFullPath, "../../../RSSGenerator/XmlToRss.xslt");
+        }
+
+        public void GenerateHtml(string xmlPath)
+        {
+            var resultFullPath = $"{resultFolder}/result.html";
+
+            Generate(xmlPath, resultFullPath, "../../../RSSGenerator/XmlToHtml.xslt");
+        }
+
+        private void Generate(string xmlPath, string resultPath, string xsltPath)
+        {
             var xsl = new XslCompiledTransform();
-            xsl.Load(xsltPath);
 
-            var resultFullPath = $"{resultPath}/result.xml";
-            xsl.Transform(xmlPath, resultFullPath);
+            xsl.Load(xsltPath, new XsltSettings() { EnableScript = true}, null);
+            xsl.Transform(xmlPath, resultPath);
         }
     }
 }

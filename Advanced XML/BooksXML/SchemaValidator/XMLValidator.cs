@@ -1,12 +1,11 @@
-﻿using CommonInterfaces;
-using System;
+﻿using System;
 using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 
 namespace SchemaValidator
 {
-    public class XMLValidator : IValidator
+    public class XMLValidator
     {
         private XmlReaderSettings settings;
         private StringBuilder errorMessage;
