@@ -9,29 +9,31 @@
   <xsl:output method="xml" indent="yes"/>
 
   <xsl:template match="/">
-    <rss version="2.0">
-      <channel>
+    <xsl:element name="rss">
+      <xsl:attribute name="version">2.0</xsl:attribute>
+      <xsl:element name="channel">
         <xsl:apply-templates />
-      </channel>
-    </rss>
+      </xsl:element>
+    </xsl:element>
   </xsl:template>
 
   <xsl:template match="b:book">
-    <item>
+    <xsl:element name="item">
       <xsl:apply-templates />
-    </item>
+    </xsl:element>
   </xsl:template>
 
+  
   <xsl:template match="b:catalog">
-    <title>
-      RSS library
-    </title>
-    <link>
-      www.library.com
-    </link>
-    <description>
-      Description
-    </description>
+    <xsl:element name="title">
+      <xsl:value-of select="'RSS library'" />
+    </xsl:element>
+    <xsl:element name="link">
+      <xsl:value-of select="'www.library.com'" />
+    </xsl:element>
+    <xsl:element name="description">
+      <xsl:value-of select="'Description'" />
+    </xsl:element>
     <xsl:apply-templates />
   </xsl:template>
 
@@ -40,28 +42,28 @@
   </xsl:template>
 
   <xsl:template match="b:registration_date">
-    <pubDate>
+    <xsl:element name="pubDate">
       <xsl:value-of select="msxsl:format-date(text(), 'ddd, dd MMM yyyy 00:00:00 EST')"/>
-    </pubDate>
+    </xsl:element>
   </xsl:template>
 
   <xsl:template match="b:title">
-    <title>
-      <xsl:value-of select="text()" />
-    </title>
+    <xsl:element name="title">
+      <xsl:value-of select="text()"/>
+    </xsl:element>
   </xsl:template>
 
   <xsl:template match="b:description">
-    <description>
-      <xsl:value-of select="text()" />
-    </description>
+    <xsl:element name="description">
+      <xsl:value-of select="text()"/>
+    </xsl:element>
   </xsl:template>
 
   <xsl:template match="b:isbn">
     <xsl:if test="text() and ../b:genre = 'Computer'">
-      <link>
+      <xsl:element name="link">
         <xsl:value-of select="concat('http://my.safaribooksonline.com/', text() ,'/')"/>
-      </link>
+      </xsl:element>
     </xsl:if>
   </xsl:template>
 
