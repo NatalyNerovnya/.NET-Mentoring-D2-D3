@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchemaValidator", "SchemaValidator\SchemaValidator.csproj", "{AB3CF7FE-63BA-437E-A7F6-57021A3D412B}"
 EndProject
@@ -10,6 +10,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSSGeneratorTool", "RSSGeneratorTool\RSSGeneratorTool.csproj", "{4C1C9B5C-6E6F-451B-91EF-CD87D9DB169A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSSGenerator", "RSSGenerator\RSSGenerator.csproj", "{DABE7955-F304-44E1-8297-BDCBCF943C5A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{62E00A89-5708-47B0-AB7A-D4F8C36AFD07}"
+	ProjectSection(SolutionItems) = preProject
+		books.xml = books.xml
+		invalidBooks.xml = invalidBooks.xml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,5 +42,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F1A5BFF0-CB9F-4711-BBAE-0788A24D6647}
 	EndGlobalSection
 EndGlobal

@@ -83,8 +83,7 @@ namespace SchemaValidator
 
         private void HandleError(object sender, ValidationEventArgs e)
         {
-            var element = (XmlReader)sender;
-            if (element != null)
+            if (sender is XmlReader element)
             {
                 errorMessage.AppendLine(CreateErrorMessage(element.Name, e));
             }

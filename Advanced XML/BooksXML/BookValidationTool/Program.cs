@@ -1,7 +1,6 @@
 ﻿using SchemaValidator;
 using System;
 using System.Configuration;
-using System.IO;
 
 namespace BookValidationTool
 {
@@ -12,24 +11,18 @@ namespace BookValidationTool
             var schemaPath = ConfigurationManager.AppSettings["xsdSchemaPath"];
             var schemaNamespace = ConfigurationManager.AppSettings["xsdSchemaNamespace"];
             var validator = new XMLValidator(schemaPath, schemaNamespace);
+            var validFilePath = ConfigurationManager.AppSettings["validFile"];
+            var invalidFilePath = ConfigurationManager.AppSettings["invalidFile"];
 
-            string filePath;
-            string consoleAnswer;
+            Console.WriteLine("Valid file output\n");
+            Console.WriteLine(validator.Validate(validFilePath));
 
-            do
-            {
-                do
-                {
-                    Console.WriteLine("Please, enter correct full path to xml file:");
-                    filePath = Console.ReadLine();
-                } while (!File.Exists(filePath));
+            Console.WriteLine("\n \n-------------------------------------------------------------------------------------\n \n");
 
-                Console.WriteLine(validator.Validate(filePath));
+            Console.WriteLine("Invalid file output\n");
+            Console.WriteLine(validator.Validate(invalidFilePath));
 
-                Console.WriteLine("Do you want to repeat?[y,n]");
-                consoleAnswer = Console.ReadLine();
-
-            } while (consoleAnswer == "y");
+            Console.ReadKey();
         }
     }
 }
