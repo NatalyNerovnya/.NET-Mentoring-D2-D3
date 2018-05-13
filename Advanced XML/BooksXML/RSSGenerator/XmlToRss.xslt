@@ -19,11 +19,23 @@
 
   <xsl:template match="b:book">
     <xsl:element name="item">
-      <xsl:apply-templates />
+      <xsl:element name="title">
+        <xsl:value-of select="b:title"/>
+      </xsl:element>
+        <xsl:if test="b:isbn and b:genre = 'Computer'">
+          <xsl:element name="link">
+            <xsl:value-of select="concat('http://my.safaribooksonline.com/', b:isbn ,'/')"/>
+          </xsl:element>
+        </xsl:if>
+        <xsl:element name="pubDate">
+          <xsl:value-of select="msxsl:format-date(b:registration_date, 'ddd, dd MMM yyyy 00:00:00 EST')"/>
+        </xsl:element>
+        <xsl:element name="description">
+          <xsl:value-of select="b:description"/>
+        </xsl:element>
     </xsl:element>
   </xsl:template>
 
-  
   <xsl:template match="b:catalog">
     <xsl:element name="title">
       <xsl:value-of select="'RSS library'" />
@@ -40,31 +52,5 @@
   <xsl:template match="@* | node()">
     <xsl:apply-templates select="@* | node()"/>
   </xsl:template>
-
-  <xsl:template match="b:registration_date">
-    <xsl:element name="pubDate">
-      <xsl:value-of select="msxsl:format-date(text(), 'ddd, dd MMM yyyy 00:00:00 EST')"/>
-    </xsl:element>
-  </xsl:template>
-
-  <xsl:template match="b:title">
-    <xsl:element name="title">
-      <xsl:value-of select="text()"/>
-    </xsl:element>
-  </xsl:template>
-
-  <xsl:template match="b:description">
-    <xsl:element name="description">
-      <xsl:value-of select="text()"/>
-    </xsl:element>
-  </xsl:template>
-
-  <xsl:template match="b:isbn">
-    <xsl:if test="text() and ../b:genre = 'Computer'">
-      <xsl:element name="link">
-        <xsl:value-of select="concat('http://my.safaribooksonline.com/', text() ,'/')"/>
-      </xsl:element>
-    </xsl:if>
-  </xsl:template>
-
+  
 </xsl:stylesheet>
