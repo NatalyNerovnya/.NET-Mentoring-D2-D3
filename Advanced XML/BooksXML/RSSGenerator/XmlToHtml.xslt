@@ -10,6 +10,8 @@
 
   <xsl:output method="html" doctype-system="about:legacy-compat"/>
 
+  <xsl:variable name="allbooks" select="//b:book" />
+
   <msxsl:script implements-prefix='user' language='CSharp'>
     <![CDATA[
     public string curDate() {
@@ -42,7 +44,7 @@
               </tr>
             </thead>
             <tbody>
-              <xsl:apply-templates select="//b:book[b:genre = current()]" />
+              <xsl:apply-templates select="$allbooks[b:genre = current()]" />
             </tbody>
             <tfoot>
               <tr>
@@ -50,14 +52,14 @@
                   Total
                 </td>
                 <td>
-                  <xsl:value-of select="count(//b:book[b:genre = current()])"/>
+                  <xsl:value-of select="count($allbooks[b:genre = current()])"/>
                 </td>
               </tr>
             </tfoot>
           </table>
         </xsl:for-each>
-        <xsl:value-of select="concat('Total number of books: ', count(//b:book))" />
-      </body>   
+        <xsl:value-of select="concat('Total number of books: ', count($allbooks))" />
+      </body>
     </html>
   </xsl:template>
 
