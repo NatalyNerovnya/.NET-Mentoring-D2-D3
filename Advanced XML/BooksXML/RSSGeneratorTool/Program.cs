@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using RSSGenerator;
+using System.Configuration;
 
 namespace RSSGeneratorTool
 {
@@ -9,17 +10,10 @@ namespace RSSGeneratorTool
         static void Main(string[] args)
         {
             var generator = new Generator();
-
-            string filePath;
-
-            do
-            {
-                Console.WriteLine("Please, enter correct full path to xml file:");
-                filePath = Console.ReadLine();
-            } while (!File.Exists(filePath));
-
-            generator.GenerateRss(filePath);
-            generator.GenerateHtml(filePath);
+            var validFilePath = ConfigurationManager.AppSettings["validFile"];
+            
+            generator.GenerateRss(validFilePath);
+            generator.GenerateHtml(validFilePath);
 
             Console.WriteLine("Created result.xml and result.html are located in C:/temp");
             Console.ReadLine();
