@@ -17,6 +17,8 @@
     }]]>
   </msxsl:script>
 
+  <xsl:variable name="book" select="b:book" />
+
   <xsl:template match="/">
     <html>
       <head>
@@ -42,7 +44,7 @@
               </tr>
             </thead>
             <tbody>
-              <xsl:apply-templates select="//b:book[b:genre = current()]" />
+              <xsl:apply-templates select="//$book[b:genre = current()]" />
             </tbody>
             <tfoot>
               <tr>
@@ -50,13 +52,13 @@
                   Total
                 </td>
                 <td>
-                  <xsl:value-of select="count(//b:book[b:genre = current()])"/>
+                  <xsl:value-of select="count(//$book[b:genre = current()])"/>
                 </td>
               </tr>
             </tfoot>
           </table>
         </xsl:for-each>
-        <xsl:value-of select="concat('Total number of books: ', count(//b:book))" />
+        <xsl:value-of select="concat('Total number of books: ', count(//$book))" />
       </body>   
     </html>
   </xsl:template>
