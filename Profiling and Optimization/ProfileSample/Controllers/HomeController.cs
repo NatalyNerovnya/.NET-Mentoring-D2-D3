@@ -15,7 +15,7 @@ namespace ProfileSample.Controllers
         {
             _context = new ProfileSampleEntities();
         }
-
+        
         public ActionResult Index()
         {
             var model = new List<ImageModel>();
@@ -69,11 +69,16 @@ namespace ProfileSample.Controllers
             return View();
         }
 
+        [OutputCache(Duration = 30, VaryByParam = "id")]
         public ActionResult GetImageById(int id)
         {
             var item = _context.ImgSources.First(s => s.Id == id);
 
             return File(item.Data, "image");
+
+            //var img = new WebImage(item.Data)
+            //    .Resize(300, 150, false, true);
+            //return File(new MemoryStream(img.GetBytes()), "binary/octet-stream");
         }
     }
 }
