@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
+using System.Web.UI;
 using ProfileSample.DAL;
 using ProfileSample.Models;
 
@@ -69,13 +70,12 @@ namespace ProfileSample.Controllers
             return View();
         }
 
-        [OutputCache(Duration = 30, VaryByParam = "id")]
+        [OutputCache(Duration = 60, VaryByParam = "id", Location = OutputCacheLocation.Client)]
         public ActionResult GetImageById(int id)
         {
             var item = _context.ImgSources.First(s => s.Id == id);
 
-            return File(item.Data, "image");
-
+            return File(item.Data, "binary/octet-stream");
             //var img = new WebImage(item.Data)
             //    .Resize(300, 150, false, true);
             //return File(new MemoryStream(img.GetBytes()), "binary/octet-stream");
