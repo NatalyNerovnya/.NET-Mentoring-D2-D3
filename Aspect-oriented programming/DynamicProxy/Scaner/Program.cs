@@ -1,5 +1,4 @@
-﻿using System;
-using System.Configuration;
+﻿using System.Configuration;
 using ScanerService;
 using Topshelf;
 using Configuration = ScanerService.Helpers.Configuration;
@@ -10,6 +9,8 @@ namespace Scaner
     {
         static void Main(string[] args)
         {
+            var container = WindsorConfiguration.Configure();
+
             var config = new Configuration(ConfigurationManager.AppSettings["Folders"]
                 , ConfigurationManager.AppSettings["SuccessFolder"]
                 , ConfigurationManager.AppSettings["ErrorFolder"]
