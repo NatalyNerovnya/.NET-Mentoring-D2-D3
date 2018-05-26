@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
+using System.Web.UI;
 using ProfileSample.DAL;
 using ProfileSample.Models;
 
@@ -11,26 +10,27 @@ namespace ProfileSample.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly ProfileSampleEntities _context;
+
+        public HomeController()
+        {
+            _context = new ProfileSampleEntities();
+        }
+        
         public ActionResult Index()
         {
-            var context = new ProfileSampleEntities();
-
-            var sources = context.ImgSources.Take(20).Select(x => x.Id);
-            
             var model = new List<ImageModel>();
+            var sources = _context.ImgSources.Take(20);
 
-            foreach (var id in sources)
+            foreach (var item in sources.ToList())
             {
-                var item = context.ImgSources.Find(id);
-
-                var obj = new ImageModel()
+                model.Add(new ImageModel()
                 {
+                    Id = item.Id,
                     Name = item.Name,
                     Data = item.Data
-                };
-
-                model.Add(obj);
-            } 
+                });
+            }
 
             return View(model);
         }
@@ -39,7 +39,7 @@ namespace ProfileSample.Controllers
         {
             var files = Directory.GetFiles(Server.MapPath("~/Content/Img"), "*.jpg");
 
-            using (var context = new ProfileSampleEntities())
+            using (_context)
             {
                 foreach (var file in files)
                 {
@@ -47,18 +47,17 @@ namespace ProfileSample.Controllers
                     {
                         byte[] buff = new byte[stream.Length];
 
-                        stream.Read(buff, 0, (int) stream.Length);
+                        stream.Read(buff, 0, (int)stream.Length);
 
-                        var entity = new ImgSource()
+                        _context.ImgSources.Add(new ImgSource()
                         {
                             Name = Path.GetFileName(file),
-                            Data = buff,
-                        };
-
-                        context.ImgSources.Add(entity);
-                        context.SaveChanges();
+                            Data = buff
+                        });
                     }
-                } 
+                }
+
+                _context.SaveChanges();
             }
 
             return RedirectToAction("Index");
@@ -69,6 +68,17 @@ namespace ProfileSample.Controllers
             ViewBag.Message = "Your contact page.";
 
             return View();
+        }
+
+        [OutputCache(Duration = 60, VaryByParam = "id", Location = OutputCacheLocation.Client)]
+        public ActionResult GetImageById(int id)
+        {
+            var item = _context.ImgSources.First(s => s.Id == id);
+
+            return File(item.Data, "binary/octet-stream");
+            //var img = new WebImage(item.Data)
+            //    .Resize(300, 150, false, true);
+            //return File(new MemoryStream(img.GetBytes()), "binary/octet-stream");
         }
     }
 }
