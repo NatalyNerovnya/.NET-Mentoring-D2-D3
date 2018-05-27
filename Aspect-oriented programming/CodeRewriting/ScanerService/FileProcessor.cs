@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using ScanerService.Interafces;
-using Logging;
+using ScanerService.Helpers;
 
 namespace ScanerService
 {

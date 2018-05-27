@@ -60,8 +60,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LoggerInstaller.cs" />
-    <Compile Include="LogInterceptor.cs" />
+    <Compile Include="CustomLogger.cs" />
+    <Compile Include="ICustomLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

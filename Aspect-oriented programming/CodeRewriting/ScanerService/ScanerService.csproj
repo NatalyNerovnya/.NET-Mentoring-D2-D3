@@ -84,6 +84,7 @@
     <Compile Include="DirectoryService.cs" />
     <Compile Include="FileProcessor.cs" />
     <Compile Include="Helpers\Configuration.cs" />
+    <Compile Include="Helpers\LoggingAttribute.cs" />
     <Compile Include="Interfaces\IDirectoryService.cs" />
     <Compile Include="Interfaces\IFileProcessor.cs" />
     <Compile Include="Interfaces\IFileService.cs" />
@@ -96,12 +97,14 @@
     <Compile Include="ScanProcessService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Logging\Logging.csproj">
-      <Project>{8516405d-45f9-453a-8185-635fe4b0bcd2}</Project>
-      <Name>Logging</Name>
+    <ProjectReference Include="..\..\CustomLogging\Logger\MethodLogger.csproj">
+      <Project>{a869b5b6-2be6-4036-a998-008f197eda26}</Project>
+      <Name>MethodLogger</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

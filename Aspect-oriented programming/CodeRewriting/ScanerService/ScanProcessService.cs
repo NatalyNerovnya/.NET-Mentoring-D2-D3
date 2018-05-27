@@ -6,7 +6,7 @@ using System.Linq;
 using ScanerService.Rules;
 using Topshelf;
 using Configuration = ScanerService.Helpers.Configuration;
-using Logging;
+using ScanerService.Helpers;
 
 namespace ScanerService
 {

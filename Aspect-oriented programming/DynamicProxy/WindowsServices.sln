@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanerService", "ScanerServ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scaner", "Scaner\Scaner.csproj", "{908B5B82-E6F8-49BA-B8A3-B65B2C1DCC57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logging", "Logging\Logging.csproj", "{6B925505-EBD4-4435-A029-3BF94C768A8C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MethodLogger", "..\CustomLogging\Logger\MethodLogger.csproj", "{A869B5B6-2BE6-4036-A998-008F197EDA26}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{908B5B82-E6F8-49BA-B8A3-B65B2C1DCC57}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{908B5B82-E6F8-49BA-B8A3-B65B2C1DCC57}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{908B5B82-E6F8-49BA-B8A3-B65B2C1DCC57}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6B925505-EBD4-4435-A029-3BF94C768A8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6B925505-EBD4-4435-A029-3BF94C768A8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6B925505-EBD4-4435-A029-3BF94C768A8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6B925505-EBD4-4435-A029-3BF94C768A8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A869B5B6-2BE6-4036-A998-008F197EDA26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A869B5B6-2BE6-4036-A998-008F197EDA26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A869B5B6-2BE6-4036-A998-008F197EDA26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A869B5B6-2BE6-4036-A998-008F197EDA26}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

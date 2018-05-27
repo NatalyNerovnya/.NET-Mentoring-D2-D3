@@ -1,28 +1,21 @@
-﻿using Castle.DynamicProxy;
-using NLog;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Web.Script.Serialization;
+using NLog;
+using System;
 
 namespace Logging
 {
-    public class LogInterceptor : IInterceptor
+    [Serializable]
+    public class CustomLogger: ICustomLogger
     {
+        private Logger _logger;
 
-        private readonly Logger _logger;
-
-        public LogInterceptor()
+        public CustomLogger()
         {
             _logger = LogManager.GetCurrentClassLogger();
         }
 
-        public void Intercept(IInvocation invocation)
-        {
-            LogBeforeCall(invocation.Method, invocation.Arguments);
-            invocation.Proceed();
-            LogAfterCall(invocation.ReturnValue);
-        }
-
-        private void LogBeforeCall(MethodBase method, object[] arguments)
+        public void LogBeforeCall(MethodBase method, object[] arguments)
         {
             var data = new { method.DeclaringType.FullName, method.Name, arguments };
             var json = new JavaScriptSerializer().Serialize(data);
@@ -36,7 +29,7 @@ namespace Logging
             {
                 var json = new JavaScriptSerializer().Serialize(returnValue);
                 _logger.Trace(json);
-            }            
+            }
         }
     }
 }

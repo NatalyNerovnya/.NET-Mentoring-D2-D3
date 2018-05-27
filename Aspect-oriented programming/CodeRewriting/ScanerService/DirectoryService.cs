@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using ScanerService.Interafces;
 using System.Threading;
-using Logging;
+using ScanerService.Helpers;
 
 namespace ScanerService
 {

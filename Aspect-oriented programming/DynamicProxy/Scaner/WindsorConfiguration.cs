@@ -1,7 +1,7 @@
 ﻿using Castle.Core;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
-using Logging;
+using Scaner.Logging;
 using ScanerService;
 using ScanerService.Interafces;
 using ScanerService.Interfaces;

@@ -3,7 +3,7 @@ using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using Castle.DynamicProxy;
 
-namespace Logging
+namespace Scaner.Logging
 {
     public class LoggerInstaller : IWindsorInstaller
     {

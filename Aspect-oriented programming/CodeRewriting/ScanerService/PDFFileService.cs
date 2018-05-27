@@ -2,7 +2,7 @@
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using ScanerService.Interfaces;
-using Logging;
+using ScanerService.Helpers;
 
 namespace ScanerService
 {
