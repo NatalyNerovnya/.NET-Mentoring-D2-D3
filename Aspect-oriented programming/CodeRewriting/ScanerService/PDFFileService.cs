@@ -2,6 +2,7 @@
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using ScanerService.Interfaces;
+using Logging;
 
 namespace ScanerService
 {
@@ -18,7 +19,8 @@ namespace ScanerService
             _successFolder = successFolder;
             _counter = 1;
         }
-        
+
+        [Logger]
         public void AddPage(string filePath)
         {
             if (!_isFileCreated) CreateDocument();
@@ -35,6 +37,7 @@ namespace ScanerService
             }
         }
 
+        [Logger]
         public void SaveDocument()
         {
             if (!_isFileCreated) return;

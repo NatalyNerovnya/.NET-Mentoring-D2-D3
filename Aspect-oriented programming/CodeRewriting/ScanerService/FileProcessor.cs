@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using ScanerService.Interafces;
+using Logging;
 
 namespace ScanerService
 {
@@ -27,6 +28,7 @@ namespace ScanerService
             _fileNamePattern = fileNamePattern;
         }
 
+        [Logger]
         public void ProcessFiles(string filePath, List<IInteruptRule> rules)
         {
             foreach (var rule in rules)
@@ -48,6 +50,7 @@ namespace ScanerService
             }
         }
 
+        [Logger]
         public void ProcessWaitingFiles(string watchFolder, List<IInteruptRule> rules)
         {
             var files = Directory.EnumerateFiles(watchFolder).ToList();
@@ -60,6 +63,7 @@ namespace ScanerService
             }
         }
 
+        [Logger]
         private bool CheckRules(IInteruptRule rule, string filePath)
         {
             if (rule.IsMatch(filePath))

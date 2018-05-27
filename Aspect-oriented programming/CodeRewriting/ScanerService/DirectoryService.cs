@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using ScanerService.Interafces;
 using System.Threading;
+using Logging;
 
 namespace ScanerService
 {
@@ -17,6 +18,7 @@ namespace ScanerService
             return watcher;
         }
 
+        [Logger]
         public void MoveFile(string filePath, string destenitionPath)
         {
             if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath)) return;
@@ -45,6 +47,7 @@ namespace ScanerService
             }
         }
 
+        [Logger]
         public bool TryOpen(string fileName, int tryCount)
         {
             for (var i = 0; i < tryCount; i++)
@@ -65,6 +68,7 @@ namespace ScanerService
             return false;
         }
 
+        [Logger]
         private void MoveOrUpdate(string file, string destinitionFile)
         {
             if (TryOpen(file, 3) && File.Exists(destinitionFile))

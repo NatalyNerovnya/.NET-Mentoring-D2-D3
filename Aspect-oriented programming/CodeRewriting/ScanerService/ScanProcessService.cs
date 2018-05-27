@@ -6,6 +6,7 @@ using System.Linq;
 using ScanerService.Rules;
 using Topshelf;
 using Configuration = ScanerService.Helpers.Configuration;
+using Logging;
 
 namespace ScanerService
 {
@@ -65,6 +66,7 @@ namespace ScanerService
             _watcher.EnableRaisingEvents = true;
         }
 
+        [Logger]
         private void HandleFile(object sender, FileSystemEventArgs args)
         {
             var filePath = args.FullPath;
