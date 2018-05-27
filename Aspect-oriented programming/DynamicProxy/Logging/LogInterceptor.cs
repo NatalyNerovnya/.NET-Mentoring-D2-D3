@@ -8,9 +8,9 @@ namespace Logging
 
         private readonly ICustomLogger _logger;
 
-        public LogInterceptor(ICustomLogger logger)
+        public LogInterceptor()
         {
-            _logger = logger;
+            _logger = new Logger();
         }
 
         public void Intercept(IInvocation invocation)

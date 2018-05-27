@@ -17,12 +17,12 @@ namespace ScanerService
         private readonly IFileProcessor _fileProcessor;
         private readonly List<IInteruptRule> _rules;
 
-        public ScanProcessService(Configuration config)
+        public ScanProcessService(Configuration config, IDirectoryService directoryService, IFileProcessor fileProcessor)
         {
             _configuration = config;
 
-            _directoryService = new DirectoryService();
-            _fileProcessor = new FileProcessor(_configuration.SuccessFolder, _configuration.ErrorFolder, _configuration.ProcessingFolder, _configuration.FileNamePattern);
+            _directoryService = directoryService;
+            _fileProcessor = fileProcessor;
             _rules = new List<IInteruptRule>
             {
                 new TimerRule(_configuration.TimerValue),

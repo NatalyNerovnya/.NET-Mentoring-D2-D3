@@ -1,4 +1,5 @@
-﻿namespace ScanerService.Helpers
+﻿
+namespace ScanerService.Helpers
 {
     public class Configuration
     {

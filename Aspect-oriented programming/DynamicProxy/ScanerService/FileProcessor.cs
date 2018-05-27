@@ -17,10 +17,10 @@ namespace ScanerService
         private readonly string _processingFolder;
         private readonly string _fileNamePattern;
 
-        public FileProcessor(string successFolder, string errorFolder, string processingFolder, string fileNamePattern)
+        public FileProcessor(IFileService fileService, string successFolder, string errorFolder, string processingFolder, string fileNamePattern)
         {
             _directoryService = new DirectoryService();
-            _fileService = new PdfFileService(successFolder);
+            _fileService = fileService;
             _successFolder = successFolder;
             _errorFolder = errorFolder;
             _processingFolder = processingFolder;
