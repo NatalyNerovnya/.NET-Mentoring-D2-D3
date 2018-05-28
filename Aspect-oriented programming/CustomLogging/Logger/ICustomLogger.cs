@@ -6,6 +6,6 @@ namespace MethodLogger
     {
         void LogBeforeCall(MethodBase method, object[] arguments);
 
-        void LogAfterCall(object returnValue);
+        void LogAfterCall(string methodName, object returnValue);
     }
 }

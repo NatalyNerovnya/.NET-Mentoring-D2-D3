@@ -17,7 +17,7 @@ namespace Scaner.Logging
         {
             _logger.LogBeforeCall(invocation.Method, invocation.Arguments);
             invocation.Proceed();
-            _logger.LogAfterCall(invocation.ReturnValue);
+            _logger.LogAfterCall(invocation.Method.Name, invocation.ReturnValue);
         }
     }
 }

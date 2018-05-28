@@ -31,11 +31,11 @@ namespace MethodLogger
             _logger.Trace(json);
         }
 
-        public void LogAfterCall(object returnValue)
+        public void LogAfterCall(string methodName, object returnValue)
         {
             if (returnValue != null)
             {
-                var json = new JavaScriptSerializer().Serialize(returnValue);
+                var json = new JavaScriptSerializer().Serialize(new { methodName, returnValue });
                 _logger.Trace(json);
             }
         }
